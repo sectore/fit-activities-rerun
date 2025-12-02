@@ -1,0 +1,21 @@
+[project]
+name = "fit-activities-rerun"
+version = "0.1.0"
+description = "Load FIT file data and log it to Rerun.io"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "rerun-sdk>=0.27.2",
+    "fitdecode",
+    "python-dotenv>=1.2.1",
+]
+
+[project.scripts]
+fit-activities-rerun = "fit_activities_rerun.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fit_activities_rerun"]
