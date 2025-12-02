@@ -238,6 +238,6 @@ __marimo__/
 .streamlit/secrets.toml
 
 
-direnv
+.direnv/
 
 data/private/**/*.fit
