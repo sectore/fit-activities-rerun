@@ -467,7 +467,7 @@ def log_data(act: Activity):
 
     data_ids = get_available_data_ids(act)
 
-    # style scalar lines + peak + dip points
+    # style scalar lines + max + min points
     # Note: 7F -> 127 for transparency (50%)
     for data_id in data_ids:
         # lines
@@ -482,19 +482,19 @@ def log_data(act: Activity):
             rr.SeriesLines(names="avg", colors=0x1B7EF77F, widths=2),
             static=True,
         )
-        # peak
+        # max
         rr.log(
-            f"{id}/{data_id}/peak",
+            f"{id}/{data_id}/max",
             rr.SeriesPoints(
-                names="peak", colors=0xE11D487F, markers="circle", marker_sizes=2
+                names="max", colors=0xE11D487F, markers="circle", marker_sizes=2
             ),
             static=True,
         )
-        # dip
+        # min
         rr.log(
-            f"{id}/{data_id}/dip",
+            f"{id}/{data_id}/min",
             rr.SeriesPoints(
-                names="dip", colors=0xFDE0477F, markers="circle", marker_sizes=2
+                names="min", colors=0xFDE0477F, markers="circle", marker_sizes=2
             ),
             static=True,
         )
@@ -658,10 +658,10 @@ def log_data(act: Activity):
                 rr.log(f"{id}/{data_id}", rr.Scalars(value))
                 max_value = getattr(act, f"max_{data_id}", None)
                 if max_value is not None and max_value == value:
-                    rr.log(f"{id}/{data_id}/peak", rr.Scalars(max_value))
+                    rr.log(f"{id}/{data_id}/max", rr.Scalars(max_value))
                 min_value = getattr(act, f"min_{data_id}", None)
                 if min_value is not None and min_value == value:
-                    rr.log(f"{id}/{data_id}/dip", rr.Scalars(min_value))
+                    rr.log(f"{id}/{data_id}/min", rr.Scalars(min_value))
                 avg_value = getattr(act, f"avg_{data_id}", None)
                 if avg_value is not None:
                     rr.log(f"{id}/{data_id}/avg", rr.Scalars(avg_value))
