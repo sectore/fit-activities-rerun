@@ -14,13 +14,13 @@ Position: TypeAlias = tuple[float, float]
 
 
 def format_distance(kilometers: float) -> str:
-    """Convert kilometers to readable format (e.g. 500m, 1.234km)."""
+    """Convert kilometers to readable format (e.g. 500m, 1.2km)."""
     meters = kilometers * 1000
 
     if meters < 1000:
         return f"{int(meters)}m"
 
-    return f"{kilometers:.3f}km"
+    return f"{kilometers:.1f}km"
 
 
 def format_time(seconds: float) -> str:
@@ -50,6 +50,12 @@ def format_time(seconds: float) -> str:
     return " ".join(parts)
 
 
+def format_speed(speed: float) -> str:
+    unit = "km/h"
+    # limit to 2 decimal places and remove trailing zeros
+    return f"{round(speed, 2):g} {unit}"
+
+
 @dataclass
 class Record:
     timestamp: datetime.datetime
@@ -58,7 +64,7 @@ class Record:
     distance: Optional[float] = None
     speed: Optional[float] = None
     heartrate: Optional[int] = None
-    temperature: Optional[float] = None
+    temperature: Optional[int] = None
     altitude: Optional[float] = None
 
 
@@ -66,22 +72,51 @@ class Record:
 class Activity:
     id: str
     records: list[Record]
+    type: Optional[str] = None
+
+    # time data
     start_time: Optional[datetime.datetime] = None
     total_time: Optional[float] = None
     pause_time: Optional[float] = None
-    type: Optional[str] = None
-    has_speed_data: bool = False
-    max_speed: Optional[float] = None
-    avg_speed: Optional[float] = None
+
+    # distance data
     total_distance: Optional[float] = None
-    has_temperature_data: bool = False
+
+    # temperature data
+    no_temperature_records: int = False
     max_temperature: Optional[int] = None
+    min_temperature: Optional[int] = None
     avg_temperature: Optional[int] = None
-    has_altitude_data: bool = False
+
+    def has_temperature_data(self) -> bool:
+        return self.no_temperature_records > 0
+
+    # altitude data
+    no_altitude_records: int = 0
     max_altitude: Optional[float] = None
+    min_altitude: Optional[float] = None
+    avg_altitude: Optional[float] = None
+
+    def has_altitude_data(self) -> bool:
+        return self.no_altitude_records > 0
+
+    # speed data
+    no_speed_records: int = 0
+    max_speed: Optional[float] = None
+    min_speed: Optional[float] = None
+    avg_speed: Optional[float] = None
+
+    def has_speed_data(self) -> bool:
+        return self.no_speed_records > 0
+
+    # heartrate data
     max_heartrate: Optional[int] = None
+    min_heartrate: Optional[int] = None
     avg_heartrate: Optional[int] = None
-    has_heartrate_data: bool = False
+    no_heartrate_records: int = 0
+
+    def has_heartrate_data(self) -> bool:
+        return self.no_heartrate_records > 0
 
 
 def get_available_data_ids(act: Activity) -> list[str]:
@@ -89,10 +124,10 @@ def get_available_data_ids(act: Activity) -> list[str]:
     return [
         data_id
         for data_id, has_data in [
-            ("speed", act.has_speed_data),
-            ("heartrate", act.has_heartrate_data),
-            ("altitude", act.has_altitude_data),
-            ("temperature", act.has_temperature_data),
+            ("speed", act.has_speed_data()),
+            ("heartrate", act.has_heartrate_data()),
+            ("altitude", act.has_altitude_data()),
+            ("temperature", act.has_temperature_data()),
         ]
         if has_data
     ]
@@ -139,6 +174,8 @@ def blueprint_vertical(act: Activity, use_mapbox: bool) -> rrb.BlueprintLike:
 
 def parse_fit_file(file_path: Path) -> Activity:
     """Parse FIT file and extract `RecordData`."""
+    """Note: On some devices some data are not available in `session` fields. """
+    """In this case it will be parsed and calculated from `records` fields."""
     records = []
 
     id = file_path.stem.replace(" ", "_")
@@ -147,8 +184,27 @@ def parse_fit_file(file_path: Path) -> Activity:
     with fitdecode.FitReader(
         file_path, processor=fitdecode.StandardUnitsDataProcessor()
     ) as fit:
+        # `record` fallbacks for `temperature`
+        record_min_temperature = None
+        record_max_temperature = None
+        sum_temperature = 0
+
+        # `record` fallbacks for `heartrate`
+        record_max_heartrate = None
+        sum_heartrate = 0
+
+        # `record` fallbacks for `speed`
+        record_max_speed = None
+        sum_speed = 0.0
+
+        # `record` fallbacks for `altitude`
+        record_min_altitude = None
+        record_max_altitude = None
+        sum_altitude = 0.0
+
         for frame in fit:
             if isinstance(frame, fitdecode.FitDataMessage):
+                # Get data from `session` frame
                 if frame.name == "session":
                     print("Session fields:")
                     for field in frame.fields:
@@ -186,16 +242,32 @@ def parse_fit_file(file_path: Path) -> Activity:
                     ):
                         activity.max_temperature = value
                     if isinstance(
+                        value := frame.get_value("min_temperature", fallback=None), int
+                    ):
+                        activity.min_temperature = value
+                    if isinstance(
                         value := frame.get_value("avg_temperature", fallback=None), int
                     ):
                         activity.avg_temperature = value
+
                     if isinstance(
                         value := frame.get_value("enhanced_max_altitude", fallback=None)
                         or frame.get_value("max_altitude", fallback=None),
                         float,
                     ):
                         activity.max_altitude = value
-
+                    if isinstance(
+                        value := frame.get_value("enhanced_min_altitude", fallback=None)
+                        or frame.get_value("min_altitude", fallback=None),
+                        float,
+                    ):
+                        activity.min_altitude = value
+                    if isinstance(
+                        value := frame.get_value("enhanced_avg_altitude", fallback=None)
+                        or frame.get_value("avg_altitude", fallback=None),
+                        float,
+                    ):
+                        activity.avg_altitude = value
                     if isinstance(
                         value := frame.get_value("max_heart_rate", fallback=None), int
                     ):
@@ -221,6 +293,7 @@ def parse_fit_file(file_path: Path) -> Activity:
                     ):
                         activity.pause_time = activity.total_time - total_timer_time
 
+                # Get data from `record` frame
                 elif frame.name == "record":
                     if not isinstance(
                         timestamp := frame.get_value("timestamp", fallback=None),
@@ -238,17 +311,104 @@ def parse_fit_file(file_path: Path) -> Activity:
                     if isinstance(
                         value := frame.get_value("heart_rate", fallback=None), int
                     ):
-                        if not activity.has_heartrate_data:
-                            activity.has_heartrate_data = True
+                        activity.no_heartrate_records += 1
                         record.heartrate = value
 
+                        # Always try to get `min_heartrate` as it's is never been parsed in `session` before
+                        if activity.min_heartrate is None:
+                            activity.min_heartrate = value
+                        else:
+                            activity.min_heartrate = min(activity.min_heartrate, value)
+
+                        # Only calculate from records if session didn't provide `max`
+                        if activity.max_heartrate is None:
+                            if record_max_heartrate is None:
+                                record_max_heartrate = value
+                            else:
+                                record_max_heartrate = max(record_max_heartrate, value)
+
+                        # Only calculate `avg` from records if session didn't provide it
+                        if activity.avg_heartrate is None:
+                            sum_heartrate += value
+
                     if isinstance(
-                        value := frame.get_value("temperature", fallback=None),
-                        (int, float),
+                        value := frame.get_value("temperature", fallback=None), int
                     ):
-                        if not activity.has_temperature_data:
-                            activity.has_temperature_data = True
+                        activity.no_temperature_records += 1
                         record.temperature = value
+
+                        # Only calculate from records if session didn't provide `min`
+                        if activity.min_temperature is None:
+                            if record_min_temperature is None:
+                                record_min_temperature = value
+                            else:
+                                record_min_temperature = min(
+                                    record_min_temperature, value
+                                )
+
+                        # Only calculate from records if session didn't provide `max`
+                        if activity.max_temperature is None:
+                            if record_max_temperature is None:
+                                record_max_temperature = value
+                            else:
+                                record_max_temperature = max(
+                                    record_max_temperature, value
+                                )
+
+                        # Only calculate `avg` from records if session didn't provide it
+                        if activity.avg_temperature is None:
+                            sum_temperature += value
+
+                    if isinstance(
+                        value := frame.get_value("enhanced_speed", fallback=None)
+                        or frame.get_value("speed", fallback=None),
+                        float,
+                    ):
+                        activity.no_speed_records += 1
+                        record.speed = value
+
+                        # Always try to get `min_speed` as it's is never been parsed in `session` before
+                        if activity.min_speed is None:
+                            activity.min_speed = value
+                        else:
+                            activity.min_speed = min(activity.min_speed, value)
+
+                        # Only calculate from records if session didn't provide `max`
+                        if activity.max_speed is None:
+                            if record_max_speed is None:
+                                record_max_speed = value
+                            else:
+                                record_max_speed = max(record_max_speed, value)
+
+                        # Only calculate `avg` from records if session didn't provide it
+                        if activity.avg_speed is None:
+                            sum_speed += value
+
+                    if isinstance(
+                        value := frame.get_value("enhanced_altitude", fallback=None)
+                        or frame.get_value("altitude", fallback=None),
+                        float,
+                    ):
+                        activity.no_altitude_records += 1
+                        record.altitude = value
+
+                        # Only calculate from records if session didn't provide min
+                        if activity.min_altitude is None:
+                            if record_min_altitude is None:
+                                record_min_altitude = value
+                            else:
+                                record_min_altitude = min(record_min_altitude, value)
+
+                        # Only calculate from records if session didn't provide max
+                        if activity.max_altitude is None:
+                            if record_max_altitude is None:
+                                record_max_altitude = value
+                            else:
+                                record_max_altitude = max(record_max_altitude, value)
+
+                        # Only calculate avg from records if session didn't provide it
+                        if activity.avg_altitude is None:
+                            sum_altitude += value
 
                     if isinstance(
                         value := frame.get_value("position_lat", fallback=None), float
@@ -260,25 +420,39 @@ def parse_fit_file(file_path: Path) -> Activity:
                     ):
                         record.position_long = value
 
-                    if isinstance(
-                        value := frame.get_value("enhanced_speed", fallback=None)
-                        or frame.get_value("speed", fallback=None),
-                        float,
-                    ):
-                        if not activity.has_speed_data:
-                            activity.has_speed_data = True
-                        record.speed = value
-
-                    if isinstance(
-                        value := frame.get_value("enhanced_altitude", fallback=None)
-                        or frame.get_value("altitude", fallback=None),
-                        float,
-                    ):
-                        if not activity.has_altitude_data:
-                            activity.has_altitude_data = True
-                        record.altitude = value
-
                     records.append(record)
+
+    # Assign record-based calculations if available
+    if record_min_temperature is not None:
+        activity.min_temperature = record_min_temperature
+    if record_max_temperature is not None:
+        activity.max_temperature = record_max_temperature
+
+    if record_max_heartrate is not None:
+        activity.max_heartrate = record_max_heartrate
+
+    if record_max_speed is not None:
+        activity.max_speed = record_max_speed
+
+    if record_min_altitude is not None:
+        activity.min_altitude = record_min_altitude
+    if record_max_altitude is not None:
+        activity.max_altitude = record_max_altitude
+
+    # Calculate average values from records if session didn't provide them
+    if sum_heartrate > 0:
+        activity.avg_heartrate = int(sum_heartrate / activity.no_heartrate_records)
+
+    if sum_speed > 0:
+        activity.avg_speed = sum_speed / activity.no_speed_records
+
+    if sum_altitude > 0:
+        activity.avg_altitude = sum_altitude / activity.no_altitude_records
+
+    if sum_temperature > 0:
+        activity.avg_temperature = int(
+            sum_temperature / activity.no_temperature_records
+        )
 
     activity.records = records
 
@@ -317,7 +491,14 @@ def log_data(act: Activity):
             static=True,
         )
 
-    info_lines = [f"#### {(act.type or 'Summary').upper()}"]
+    info_lines = [f"### {(act.type or 'Summary').upper()}"]
+
+    info_lines.append(f"- ID **{act.id}**")
+    info_lines.append(f"- NO. RECORDS **{len(act.records)}**")
+
+    info_lines.append("\n")
+    info_lines.append("###### **SESSION SUMMARY**")
+
     if act.start_time is not None:
         start_time = act.start_time.strftime("%d.%m.%Y %H:%M:%S")
         info_lines.append(f"- START **{start_time}**")
@@ -330,32 +511,84 @@ def log_data(act: Activity):
         info_lines.append(f"- DURATION {' '.join(parts)}")
     if act.total_distance is not None:
         info_lines.append(f"- DISTANCE **{format_distance(act.total_distance)}**")
-    if act.max_speed is not None or act.avg_speed is not None:
-        parts = []
-        if act.avg_speed is not None:
-            parts.append(f"**{act.avg_speed:.2f} km/h** (avg)")
-        if act.max_speed is not None:
-            parts.append(f"**{act.max_speed:.2f} km/h** (max)")
-        info_lines.append(f"- SPEED {' '.join(parts)}")
-    if act.max_heartrate is not None or act.avg_heartrate is not None:
-        parts = []
-        if act.avg_heartrate is not None:
-            parts.append(f"**{act.avg_heartrate} bpm** (avg)")
-        if act.max_heartrate is not None:
-            parts.append(f"**{act.max_heartrate} bpm** (max)")
-        info_lines.append(f"- ♥ RATE {' '.join(parts)}")
-    if act.max_altitude is not None:
-        info_lines.append(f"- ALTITUDE **{act.max_altitude:.0f} m**")
-    if act.max_temperature is not None or act.avg_temperature is not None:
-        parts = []
-        if act.avg_temperature is not None:
-            parts.append(f"**{act.avg_temperature}°C** (avg)")
-        if act.max_temperature is not None:
-            parts.append(f"**{act.max_temperature}°C** (max)")
-        info_lines.append(f"- TEMPERATURE {' '.join(parts)}")
 
-    info_lines.append(f"- ID **{act.id}**")
-    info_lines.append(f"- NO. RECORDS **{len(act.records)}**")
+    info_lines.append("\n")
+    info_lines.append("###### **RECORDS SUMMARY**")
+    info_lines.append("|  | max | min | avg | no. rec.")
+    info_lines.append("| --- | --- | --- | --- | --- |")
+    info_empty_col = "-- |"
+
+    if act.has_speed_data():
+        row = "|SPEED|"
+        if act.max_speed is not None:
+            row += f"**{format_speed(act.max_speed)}**|"
+        else:
+            row += info_empty_col
+        if act.min_speed is not None:
+            row += f"**{format_speed(act.min_speed)}**|"
+        else:
+            row += info_empty_col
+        if act.avg_speed is not None:
+            row += f"**{format_speed(act.avg_speed)}**|"
+        else:
+            row += info_empty_col
+
+        row += f"**{act.no_speed_records}**|"
+        info_lines.append(row)
+
+    if act.has_heartrate_data():
+        row = "|♥ RATE|"
+        if act.max_heartrate is not None:
+            row += f"**{act.max_heartrate} bpm**|"
+        else:
+            row += info_empty_col
+        if act.min_heartrate is not None:
+            row += f"**{act.min_heartrate} bpm**|"
+        else:
+            row += info_empty_col
+        if act.avg_heartrate is not None:
+            row += f"**{act.avg_heartrate} bpm**|"
+        else:
+            row += info_empty_col
+
+        row += f"**{act.no_heartrate_records}**|"
+        info_lines.append(row)
+
+    if act.has_altitude_data():
+        row = "|ALTITUDE |"
+        if act.max_altitude is not None:
+            row += f"**{act.max_altitude:.0f} m**|"
+        else:
+            row += info_empty_col
+        if act.min_altitude is not None:
+            row += f"**{act.min_altitude:.0f} m**|"
+        else:
+            row += info_empty_col
+        if act.avg_altitude is not None:
+            row += f"**{act.avg_altitude:.0f} m**|"
+        else:
+            row += info_empty_col
+
+        row += f"**{act.no_altitude_records}**|"
+        info_lines.append(row)
+
+    if act.has_temperature_data():
+        row = "|TEMPERATURE|"
+        if act.max_temperature is not None:
+            row += f"**{act.max_temperature} °C**|"
+        else:
+            row += info_empty_col
+        if act.min_temperature is not None:
+            row += f"**{act.min_temperature} °C**|"
+        else:
+            row += info_empty_col
+        if act.avg_temperature is not None:
+            row += f"**{act.avg_temperature} °C**|"
+        else:
+            row += info_empty_col
+
+        row += f"**{act.no_temperature_records}**|"
+        info_lines.append(row)
 
     info_md = "\n".join(info_lines)
 
