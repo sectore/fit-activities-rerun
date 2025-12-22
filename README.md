@@ -80,21 +80,21 @@ fit-activities-rerun --fit data/fitdecode/Edge810-Vector-2013-08-16-15-35-10.fit
 
 To use a map tile style other than the default `osm` (OpenStreetMap), set a [Mapbox access token](https://docs.mapbox.com/help/dive-deeper/access-tokens/) as the environment variable `RERUN_MAPBOX_ACCESS_TOKEN`: 
 
-A) In `.env`:
+- A) In `.env`:
 
-```sh
-RERUN_MAPBOX_ACCESS_TOKEN=your_token
-```
-See [`.env.example`](./.env.example) for reference.
+   ```sh
+   RERUN_MAPBOX_ACCESS_TOKEN=your_token
+   ```
+   See [`.env.example`](./.env.example) for reference.
 
-B) Or by exporting it directly:
+- B) Or by exporting it directly:
 
-```sh
-export RERUN_MAPBOX_ACCESS_TOKEN=your_token
-fit-activities-rerun --fit activity.fit
-```
+   ```sh
+   export RERUN_MAPBOX_ACCESS_TOKEN=your_token
+   fit-activities-rerun --fit activity.fit
+   ```
 
-C) Or by setting it in Rerun's `Settings` -> `Map view` -> `Mapbox access token`.
+- C) Or by setting it in Rerun's `Settings` -> `Map view` -> `Mapbox access token`.
 
 # License
 
