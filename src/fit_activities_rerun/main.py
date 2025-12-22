@@ -634,17 +634,44 @@ def log_data(act: Activity):
             p: Position = (record.position_lat, record.position_long)
             activity_positions.append(p)
 
-    # show all route
-    rr.log(
-        f"{id}/route/all",
-        rr.GeoLineStrings(
-            lat_lon=activity_positions,
-            radii=rr.Radius.ui_points(2),
-            colors=0xF793117F,
-        ),
-        (),
-        static=True,
-    )
+    if activity_positions:
+        # start point
+        first = activity_positions[0]
+        rr.log(
+            f"{id}/route/all/start",
+            rr.GeoPoints(
+                lat_lon=first,
+                radii=rr.Radius.ui_points(6.0),
+                colors=0xF79311FF,
+            ),
+            (),
+            static=True,
+        )
+
+        # all route
+        rr.log(
+            f"{id}/route/all",
+            rr.GeoLineStrings(
+                lat_lon=activity_positions,
+                radii=rr.Radius.ui_points(2),
+                colors=0xF793117F,
+            ),
+            (),
+            static=True,
+        )
+
+        # finish point
+        last = activity_positions[-1]
+        rr.log(
+            f"{id}/route/all/finish",
+            rr.GeoPoints(
+                lat_lon=last,
+                radii=rr.Radius.ui_points(6.0),
+                colors=0xF793117F,
+            ),
+            (),
+            static=True,
+        )
 
     for record in act.records:
         rr.set_time(f"{id}/time", timestamp=record.timestamp)
@@ -665,7 +692,7 @@ def log_data(act: Activity):
 
             # log point of current record
             rr.log(
-                f"{id}/route/destination",
+                f"{id}/route/current/location",
                 rr.GeoPoints(
                     lat_lon=pos,
                     radii=rr.Radius.ui_points(6.0),
