@@ -4,8 +4,8 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 
 **Features:**
 - Map views: [`OpenStreetMap`](https://www.openstreetmap.org) (default) or [`Mapbox`](https://www.mapbox.com) ([access token](https://docs.mapbox.com/help/glossary/access-token/) required)
-- Charts: `speed`, `heartrate`, `altitude`, `temperature` 
-- Summary info panel
+- Charts: `speed`, `heart rate`, `altitude`, `temperature` 
+- `Summary` info panel
 - Free and open source
 
 # Table of Contents
