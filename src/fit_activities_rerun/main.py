@@ -639,8 +639,8 @@ def log_data(act: Activity):
         f"{id}/route/all",
         rr.GeoLineStrings(
             lat_lon=activity_positions,
-            radii=rr.Radius.ui_points(1.5),
-            colors=[255, 255, 255],
+            radii=rr.Radius.ui_points(2),
+            colors=0xF793117F,
         ),
         (),
         static=True,
@@ -658,8 +658,8 @@ def log_data(act: Activity):
                 f"{id}/route/current",
                 rr.GeoLineStrings(
                     lat_lon=route_positions,
-                    radii=rr.Radius.ui_points(1.5),
-                    colors=[247, 147, 26],
+                    radii=rr.Radius.ui_points(2),
+                    colors=0xF79311FF,
                 ),
             )
 
@@ -669,7 +669,7 @@ def log_data(act: Activity):
                 rr.GeoPoints(
                     lat_lon=pos,
                     radii=rr.Radius.ui_points(6.0),
-                    colors=[247, 147, 26],
+                    colors=0xF79311FF,
                 ),
             )
 
