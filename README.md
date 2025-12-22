@@ -3,8 +3,8 @@
 Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream it into [Rerun.io](https://rerun.io) for interactive visualization of fitness activities.
 
 **Features:**
-- Map views: [Open Street Map](https://www.openstreetmap.org) (default) or [`Mapbox`](https://www.mapbox.com) ([access token](https://docs.mapbox.com/help/glossary/access-token/) needed)
-- Charts: `speed`, `heartrate`, `altitude`, `temperature` 
+- Map views: [`OpenStreetMap`](https://www.openstreetmap.org) (default) or [`Mapbox`](https://www.mapbox.com) ([access token](https://docs.mapbox.com/help/glossary/access-token/) required)
+- Charts: `speed`, `heart rate`, `altitude`, `temperature` 
 - `Summary` info panel
 - Free and open source
 
@@ -42,26 +42,25 @@ uv sync
 # CLI
 
 ```sh
-usage: fit-activities-rerun [-h] [--fit FIT]
-                            [--blueprint {none,vertical}] [--headless]
-                            [--connect] [--serve] [--url URL]
-                            [--save SAVE] [--stdout]
+fit-activities-rerun --help
 
-Visualize `*.fit` data using Rerun
+usage: fit-activities-rerun [-h] --fit FIT [--blueprint {none,vertical}] [--map {osm,dark,light,streets,satellite}] [--headless] [--connect] [--serve] [--url URL] [--save SAVE] [--stdout]
+
+Visualize `*.fit` data using Rerun.
 
 options:
   -h, --help            show this help message and exit
-  --fit FIT             Path to the .fit file
+  --fit FIT             Path to the .fit file. (required)
   --blueprint {none,vertical}
-                        Select the blueprint to use
+                        Blueprint to use. (default: vertical)
+  --map {osm,dark,light,streets,satellite}
+                        Map tile style. To use styles other than 'osm', set the environment variable RERUN_MAPBOX_ACCESS_TOKEN. (default: osm)
   --headless            Don't show GUI
   --connect             Connect to an external viewer
-  --serve               Serve a web viewer (WARNING: experimental
-                        feature)
+  --serve               Serve a web viewer (WARNING: experimental feature)
   --url URL             Connect to this Rerun URL
   --save SAVE           Save data to a .rrd file at this path
-  --stdout              Log data to standard output, to be piped into a
-                        Rerun Viewer
+  --stdout              Log data to standard output, to be piped into a Rerun Viewer
 ```
 
 ## Usage
@@ -77,19 +76,25 @@ fit-activities-rerun --fit data/fitdecode/Edge810-Vector-2013-08-16-15-35-10.fit
 ```
 
 
-## Environment Variables
+## Customize `MapView`
 
-To enable `Mapbox` in the map view, set `RERUN_MAPBOX_ACCESS_TOKEN` in `.env`:
-```sh
-RERUN_MAPBOX_ACCESS_TOKEN=your_token
-```
-See [`.env.example`](./.env.example) for reference.
+To use a map tile style other than the default `osm` (OpenStreetMap), set a [Mapbox access token](https://docs.mapbox.com/help/dive-deeper/access-tokens/) as the environment variable `RERUN_MAPBOX_ACCESS_TOKEN`: 
 
-Or export it directly:
-```sh
-export RERUN_MAPBOX_ACCESS_TOKEN=your_token
-fit-activities-rerun --fit activity.fit
-```
+- A) In `.env`:
+
+   ```sh
+   RERUN_MAPBOX_ACCESS_TOKEN=your_token
+   ```
+   See [`.env.example`](./.env.example) for reference.
+
+- B) Or by exporting it directly:
+
+   ```sh
+   export RERUN_MAPBOX_ACCESS_TOKEN=your_token
+   fit-activities-rerun --fit activity.fit
+   ```
+
+- C) Or by setting it in Rerun's `Settings` -> `Map view` -> `Mapbox access token`.
 
 # License
 

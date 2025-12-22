@@ -9,6 +9,7 @@ import fitdecode
 import rerun as rr
 import rerun.blueprint as rrb
 from dotenv import load_dotenv
+from rerun.blueprint.components import MapProviderLike
 
 Position: TypeAlias = tuple[float, float]
 
@@ -133,32 +134,53 @@ def get_available_data_ids(act: Activity) -> list[str]:
     ]
 
 
-def blueprint_default() -> rrb.BlueprintLike:
+def create_map_view(id: str, map_provider: MapProviderLike) -> rrb.MapView:
+    return rrb.MapView(name="map", origin=f"{id}/route", background=map_provider)
+
+
+def create_text_view(id: str) -> rrb.TextDocumentView:
+    return rrb.TextDocumentView(name="info", origin=f"{id}/info")
+
+
+def create_time_series_view(id: str, data_id: str) -> rrb.TimeSeriesView:
+    return rrb.TimeSeriesView(name=f"{data_id}", origin=f"{id}/{data_id}")
+
+
+def blueprint_default(
+    act: Activity, map_provider: MapProviderLike
+) -> rrb.BlueprintLike:
     """Default application blueprint."""
-    return rrb.Blueprint(auto_views=True, auto_layout=True)
+
+    id = act.id
+    data_ids = get_available_data_ids(act)
+    time_series_contents = [f"{id}/{data_id}" for data_id in data_ids]
+
+    # Following container layout is similar to what `rrb.Blueprint(auto_views=True, auto_layout=True)` does
+    container = rrb.Horizontal(
+        create_map_view(id, map_provider),
+        rrb.Vertical(
+            rrb.TimeSeriesView(name="metrics", contents=time_series_contents),
+            create_text_view(id),
+        ),
+    )
+
+    return rrb.Blueprint(container)
 
 
-def blueprint_vertical(act: Activity, use_mapbox: bool) -> rrb.BlueprintLike:
-    """Custom blueprint to visualize `Activity` data."""
+def blueprint_vertical(
+    act: Activity, map_provider: MapProviderLike
+) -> rrb.BlueprintLike:
+    """Custom blueprint to visualize `Activity` data vertically. MapView on top, all other views below."""
 
     id = act.id
 
     data_ids = get_available_data_ids(act)
     viewport = rrb.Vertical(
         contents=[
-            rrb.MapView(
-                name="map",
-                origin=f"{id}/route",
-                background=rrb.MapProvider.MapboxDark
-                if use_mapbox
-                else rrb.MapProvider.OpenStreetMap,
-            ),
+            create_map_view(id, map_provider),
             rrb.Horizontal(
-                contents=[rrb.TextDocumentView(name="info", origin=f"{id}/info")]
-                + [
-                    rrb.TimeSeriesView(name=f"{data_id}", origin=f"{id}/{data_id}")
-                    for data_id in data_ids
-                ],
+                contents=[create_text_view(id)]
+                + [create_time_series_view(id, data_id) for data_id in data_ids],
             ),
         ],
         row_shares=[3, 1],
@@ -174,7 +196,7 @@ def blueprint_vertical(act: Activity, use_mapbox: bool) -> rrb.BlueprintLike:
 
 def parse_fit_file(file_path: Path) -> Activity:
     """Parse FIT file and extract `RecordData`."""
-    """Note: On some devices some data are not available in `session` fields. """
+    """Note: On some devices some data are not available in `session` fields."""
     """In this case it will be parsed and calculated from `records` fields."""
     records = []
 
@@ -206,10 +228,10 @@ def parse_fit_file(file_path: Path) -> Activity:
             if isinstance(frame, fitdecode.FitDataMessage):
                 # Get data from `session` frame
                 if frame.name == "session":
-                    print("Session fields:")
+                    # print("Session fields:")
                     for field in frame.fields:
                         value = frame.get_value(field.name, fallback=None)
-                        print(f"  {field.name}: {value} ({type(value).__name__})")
+                        # print(f"  {field.name}: {value} ({type(value).__name__})")
 
                     if isinstance(
                         value := frame.get_value("sport", fallback=None), str
@@ -670,17 +692,27 @@ def log_data(act: Activity):
 def main():
     load_dotenv()
 
-    parser = argparse.ArgumentParser(description="Visualize `*.fit` data using Rerun")
+    parser = argparse.ArgumentParser(
+        description="Visualize `*.fit` data using Rerun.",
+    )
     parser.add_argument(
         "--fit",
         type=str,
-        help="Path to the .fit file",
+        required=True,
+        help="Path to the .fit file. (required)",
     )
     parser.add_argument(
         "--blueprint",
         choices=["none", "vertical"],
         default="vertical",
-        help="Select the blueprint to use",
+        help="Blueprint to use. (default: vertical)",
+    )
+    parser.add_argument(
+        "--map",
+        type=str,
+        choices=["osm", "dark", "light", "streets", "satellite"],
+        default="osm",
+        help="Map tile style. To use styles other than 'osm', set the environment variable RERUN_MAPBOX_ACCESS_TOKEN. (default: osm)",
     )
     rr.script_add_args(parser)
 
@@ -703,13 +735,26 @@ def main():
     # parse data
     activity = parse_fit_file(file_path)
 
-    if args.blueprint == "vertical":
-        use_mapbox = "RERUN_MAPBOX_ACCESS_TOKEN" in os.environ
-        blueprint = blueprint_vertical(activity, use_mapbox)
-    else:
-        blueprint = blueprint_default()
+    use_mapbox = "RERUN_MAPBOX_ACCESS_TOKEN" in os.environ
 
-    # rr.init("fit_activities_rerun", spawn=True)
+    match [args.map, use_mapbox]:
+        case ["dark", True]:
+            map_provider = rrb.MapProvider.MapboxDark
+        case ["light", True]:
+            map_provider = rrb.MapProvider.MapboxLight
+        case ["streets", True]:
+            map_provider = rrb.MapProvider.MapboxStreets
+        case ["satellite", True]:
+            map_provider = rrb.MapProvider.MapboxSatellite
+        # other cases all goes with 'osm' (OpenStreetMap)
+        case _:
+            map_provider = rrb.MapProvider.OpenStreetMap
+
+    if args.blueprint == "vertical":
+        blueprint = blueprint_vertical(activity, map_provider)
+    else:
+        blueprint = blueprint_default(activity, map_provider)
+
     rr.script_setup(args, "fit_activities_rerun")
     rr.send_blueprint(blueprint)
 
