@@ -17,8 +17,16 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 
 # Preview
 
-<a href="data/fit-activity-rerun-preview.jpg">
-  <img alt="preview" src="data/fit-activity-rerun-preview.jpg" />
+## Dark theme
+
+<a href="data/far-dark.jpg">
+  <img alt="preview - dark theme" src="data/far-dark.jpg" />
+</a>
+
+## Light theme
+
+<a href="data/far-light.jpg">
+  <img alt="preview - light theme" src="data/far-light.jpg" />
 </a>
 
 # Requirements
