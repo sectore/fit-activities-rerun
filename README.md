@@ -80,7 +80,7 @@ fit-activities-rerun --fit <path-to-fit-file>
 ### Example
 
 ```sh
-fit-activities-rerun --fit data/fitdecode/Edge810-Vector-2013-08-16-15-35-10.fit
+fit-activities-rerun --fit ./data/fitdecode/Edge810-Vector-2013-08-16-15-35-10.fit
 ```
 
 
