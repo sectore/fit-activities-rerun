@@ -17,3 +17,12 @@ exclude = [
 ]
 
 [dependencies]
+rerun = { version = "0.28.1", default-features = false, features = [
+    "sdk",
+    "map_view",
+    "server",
+] }
+fit-rust = { git = "https://github.com/zzyandzzy/fit-rust" }
+clap = { version = "4.5", features = ["derive"] }
+anyhow = "1.0"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
