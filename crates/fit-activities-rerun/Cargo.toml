@@ -1,0 +1,19 @@
+[package]
+name = "fit-activities-rerun"
+version = "0.1.0"
+edition = "2024"
+# Reminder: Always keep `channel` in `rust-toolchain.toml` in sync with `rust-version`.
+rust-version = "1.92.0"
+authors = ["Jens Krause <jkrause.io>"]
+description = "Visualize `FIT` activity data in Rerun.io"
+license = "MIT"
+homepage = "https://github.com/sectore/fit-activities-rerun"
+repository = "https://github.com/sectore/fit-activities-rerun"
+keywords = ["fit", "rerun"]
+categories = ["command-line-utilities"]
+exclude = [
+    ".github/*",
+    "result/*",
+]
+
+[dependencies]

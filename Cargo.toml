@@ -1,0 +1,3 @@
+[workspace]
+members = ["crates/fit-activities-rerun"]
+resolver = "2"
