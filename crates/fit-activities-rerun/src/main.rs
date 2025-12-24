@@ -30,7 +30,7 @@ struct Record {
     position_long: Option<f32>,
     distance: Option<u32>,
     speed: Option<u16>,
-    heartrate: Option<i32>,
+    heartrate: Option<u8>,
     temperature: Option<i8>,
     altitude: Option<u16>,
 }
@@ -38,33 +38,33 @@ struct Record {
 #[derive(Debug, Default)]
 struct TemperatureStats {
     no_records: usize,
-    max: Option<i32>,
-    min: Option<i32>,
-    avg: Option<i32>,
+    max: Option<i8>,
+    min: Option<i8>,
+    avg: Option<i8>,
 }
 
 #[derive(Debug, Default)]
 struct AltitudeStats {
     no_records: usize,
-    max: Option<i32>,
-    min: Option<i32>,
-    avg: Option<i32>,
+    max: Option<u16>,
+    min: Option<u16>,
+    avg: Option<u16>,
 }
 
 #[derive(Debug, Default)]
 struct SpeedStats {
     no_records: usize,
-    max: Option<i32>,
-    min: Option<i32>,
-    avg: Option<i32>,
+    max: Option<u16>,
+    min: Option<u16>,
+    avg: Option<u16>,
 }
 
 #[derive(Debug, Default)]
 struct HeartrateStats {
     no_records: usize,
-    max: Option<i32>,
-    min: Option<i32>,
-    avg: Option<i32>,
+    max: Option<u8>,
+    min: Option<u8>,
+    avg: Option<u8>,
 }
 
 #[derive(Debug)]
@@ -132,6 +132,12 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
         .replace(' ', "_");
 
     let mut activity = Activity::new(id);
+
+    // Sum variables for calculating averages
+    let mut sum_temperature: i64 = 0;
+    let mut sum_heartrate: u64 = 0;
+    let mut sum_speed: u64 = 0;
+    let mut sum_altitude: u64 = 0;
 
     println!("=== Parsing FIT file ===");
     println!("Total messages: {}", fit.data.len());
@@ -211,14 +217,54 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                         2 => {
                             if let Value::U16(v) = &field.value {
                                 activity.altitude_stats.no_records += 1;
-                                record.altitude = Some(*v);
+                                let value = *v;
+                                record.altitude = Some(value);
+
+                                // Update min
+                                activity.altitude_stats.min = Some(
+                                    activity
+                                        .altitude_stats
+                                        .min
+                                        .map_or(value, |min| min.min(value)),
+                                );
+
+                                // Update max
+                                activity.altitude_stats.max = Some(
+                                    activity
+                                        .altitude_stats
+                                        .max
+                                        .map_or(value, |max| max.max(value)),
+                                );
+
+                                // Accumulate for avg
+                                sum_altitude += value as u64;
                             }
                         }
                         // heart_rate (bpm)
                         3 => {
                             if let Value::U8(v) = &field.value {
                                 activity.heartrate_stats.no_records += 1;
-                                record.heartrate = Some(*v as i32);
+                                let value = *v;
+                                record.heartrate = Some(value);
+
+                                // Update min
+                                activity.heartrate_stats.min = Some(
+                                    activity
+                                        .heartrate_stats
+                                        .min
+                                        .map_or(value, |min| min.min(value)),
+                                );
+
+                                // Update max
+                                activity.heartrate_stats.max = Some(
+                                    activity
+                                        .heartrate_stats
+                                        .max
+                                        .map_or(value, |max| max.max(value)),
+                                );
+
+                                // Accumulate for avg
+                                sum_heartrate += value as u64;
                             }
                         }
                         // distance
@@ -231,14 +277,42 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                         6 => {
                             if let Value::U16(v) = &field.value {
                                 activity.speed_stats.no_records += 1;
-                                record.speed = Some(*v);
+                                let value = *v;
+                                record.speed = Some(value);
+
+                                // Update min
+                                activity.speed_stats.min = Some(
+                                    activity.speed_stats.min.map_or(value, |min| min.min(value)),
+                                );
+
+                                // Update max
+                                activity.speed_stats.max = Some(
+                                    activity.speed_stats.max.map_or(value, |max| max.max(value)),
+                                );
+
+                                // Accumulate for avg
+                                sum_speed += value as u64;
                             }
                         }
                         // temperature
                         13 => {
                             if let Value::I8(v) = &field.value {
                                 activity.temp_stats.no_records += 1;
-                                record.temperature = Some(*v);
+                                let value = *v;
+                                record.temperature = Some(value);
+
+                                // Update min
+                                activity.temp_stats.min = Some(
+                                    activity.temp_stats.min.map_or(value, |min| min.min(value)),
+                                );
+
+                                // Update max
+                                activity.temp_stats.max = Some(
+                                    activity.temp_stats.max.map_or(value, |max| max.max(value)),
+                                );
+
+                                // Accumulate for avg
+                                sum_temperature += value as i64;
                             }
                         }
                         _ => {}
@@ -251,8 +325,36 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
         }
     }
 
+    // Calculate average values from accumulated sums
+    if activity.temp_stats.no_records > 0 {
+        activity.temp_stats.avg =
+            Some((sum_temperature / activity.temp_stats.no_records as i64) as i8);
+    }
+
+    if activity.heartrate_stats.no_records > 0 {
+        activity.heartrate_stats.avg =
+            Some((sum_heartrate / activity.heartrate_stats.no_records as u64) as u8);
+    }
+
+    if activity.speed_stats.no_records > 0 {
+        activity.speed_stats.avg =
+            Some((sum_speed / activity.speed_stats.no_records as u64) as u16);
+    }
+
+    if activity.altitude_stats.no_records > 0 {
+        activity.altitude_stats.avg =
+            Some((sum_altitude / activity.altitude_stats.no_records as u64) as u16);
+    }
+
     println!("\n--- Parsing Complete ---");
     println!("Total records parsed: {}", activity.records.len());
+
+    // Print stats
+    println!("\n--- Stats Summary ---");
+    println!("Temperature: {:?}", activity.temp_stats);
+    println!("Heartrate: {:?}", activity.heartrate_stats);
+    println!("Speed: {:?}", activity.speed_stats);
+    println!("Altitude: {:?}", activity.altitude_stats);
 
     // Print first 3 records as samples
     if !activity.records.is_empty() {
