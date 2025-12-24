@@ -133,6 +133,14 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
 
     let mut activity = Activity::new(id);
 
+    // Record-based fallback tracking (only used if session doesn't provide values)
+    let mut record_min_temperature: Option<i8> = None;
+    let mut record_max_temperature: Option<i8> = None;
+    let mut record_max_heartrate: Option<u8> = None;
+    let mut record_max_speed: Option<u16> = None;
+    let mut record_min_altitude: Option<u16> = None;
+    let mut record_max_altitude: Option<u16> = None;
+
     // Sum variables for calculating averages
     let mut sum_temperature: i64 = 0;
     let mut sum_heartrate: u64 = 0;
@@ -183,7 +191,39 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                 activity.total_distance = Some(*v as f64);
                             }
                         }
-                        _ => {}
+                        // enhanced_avg_speed
+                        14 => {
+                            if let Value::U16(v) = &field.value {
+                                activity.speed_stats.avg = Some(*v);
+                            }
+                        }
+                        // enhanced_max_speed
+                        15 => {
+                            if let Value::U16(v) = &field.value {
+                                activity.speed_stats.max = Some(*v);
+                            }
+                        }
+                        // avg_heart_rate
+                        16 => {
+                            if let Value::U8(v) = &field.value {
+                                activity.heartrate_stats.avg = Some(*v);
+                            }
+                        }
+                        // max_heart_rate
+                        17 => {
+                            if let Value::U8(v) = &field.value {
+                                activity.heartrate_stats.max = Some(*v);
+                            }
+                        }
+                        // NOTE: Session does NOT provide:
+                        // - Temperature stats (min, max, avg) - calculated from records
+                        // - Altitude stats (min, max, avg) - calculated from records
+                        // - min_heart_rate - calculated from records
+                        // - min_speed - calculated from records
+                        _ => {
+                            // Print unknown fields to help identify field numbers
+                            println!("  Field {}: {:?}", field.field_num, field.value);
+                        }
                     }
                 }
             }
@@ -194,20 +234,20 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
 
                 for field in &msg.data.values {
                     match field.field_num {
-                        // timestamp
+                        // `timestamp`
                         253 => {
                             if let Value::Time(v) = &field.value {
                                 record.timestamp =
                                     DateTime::from_timestamp(*v as i64, 0).unwrap_or_else(Utc::now);
                             }
                         }
-                        // position_lat
+                        // `position_lat`
                         0 => {
                             if let Value::F32(v) = &field.value {
                                 record.position_lat = Some(*v);
                             }
                         }
-                        // position_long
+                        // `position_long`
                         1 => {
                             if let Value::F32(v) = &field.value {
                                 record.position_long = Some(*v);
@@ -220,24 +260,24 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                 let value = *v;
                                 record.altitude = Some(value);
 
-                                // Update min
-                                activity.altitude_stats.min = Some(
-                                    activity
-                                        .altitude_stats
-                                        .min
-                                        .map_or(value, |min| min.min(value)),
-                                );
+                                // Only calculate from records if session didn't provide `min`
+                                if activity.altitude_stats.min.is_none() {
+                                    record_min_altitude = Some(
+                                        record_min_altitude.map_or(value, |min| min.min(value)),
+                                    );
+                                }
 
-                                // Update max
-                                activity.altitude_stats.max = Some(
-                                    activity
-                                        .altitude_stats
-                                        .max
-                                        .map_or(value, |max| max.max(value)),
-                                );
+                                // Only calculate from records if session didn't provide `max`
+                                if activity.altitude_stats.max.is_none() {
+                                    record_max_altitude = Some(
+                                        record_max_altitude.map_or(value, |max| max.max(value)),
+                                    );
+                                }
 
-                                // Accumulate for avg
-                                sum_altitude += value as u64;
+                                // Only accumulate for `avg` if session didn't provide it
+                                if activity.altitude_stats.avg.is_none() {
+                                    sum_altitude += value as u64;
+                                }
                             }
                         }
                         // heart_rate (bpm)
@@ -247,7 +287,7 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                 let value = *v;
                                 record.heartrate = Some(value);
 
-                                // Update min
+                                // Always calculate `min` (session never provides it)
                                 activity.heartrate_stats.min = Some(
                                     activity
                                         .heartrate_stats
@@ -255,16 +295,17 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                         .map_or(value, |min| min.min(value)),
                                 );
 
-                                // Update max
-                                activity.heartrate_stats.max = Some(
-                                    activity
-                                        .heartrate_stats
-                                        .max
-                                        .map_or(value, |max| max.max(value)),
-                                );
+                                // Only calculate from records if session didn't provide `max`
+                                if activity.heartrate_stats.max.is_none() {
+                                    record_max_heartrate = Some(
+                                        record_max_heartrate.map_or(value, |max| max.max(value)),
+                                    );
+                                }
 
-                                // Accumulate for avg
-                                sum_heartrate += value as u64;
+                                // Only accumulate for `avg` if session didn't provide it
+                                if activity.heartrate_stats.avg.is_none() {
+                                    sum_heartrate += value as u64;
+                                }
                             }
                         }
                         // distance
@@ -280,18 +321,21 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                 let value = *v;
                                 record.speed = Some(value);
 
-                                // Update min
+                                // Always calculate `min` (session never provides it)
                                 activity.speed_stats.min = Some(
                                     activity.speed_stats.min.map_or(value, |min| min.min(value)),
                                 );
 
-                                // Update max
-                                activity.speed_stats.max = Some(
-                                    activity.speed_stats.max.map_or(value, |max| max.max(value)),
-                                );
+                                // Only calculate from records if session didn't provide `max`
+                                if activity.speed_stats.max.is_none() {
+                                    record_max_speed =
+                                        Some(record_max_speed.map_or(value, |max| max.max(value)));
+                                }
 
-                                // Accumulate for avg
-                                sum_speed += value as u64;
+                                // Only accumulate for `avg` if session didn't provide it
+                                if activity.speed_stats.avg.is_none() {
+                                    sum_speed += value as u64;
+                                }
                             }
                         }
                         // temperature
@@ -301,18 +345,24 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                 let value = *v;
                                 record.temperature = Some(value);
 
-                                // Update min
-                                activity.temp_stats.min = Some(
-                                    activity.temp_stats.min.map_or(value, |min| min.min(value)),
-                                );
+                                // Only calculate from records if session didn't provide `min`
+                                if activity.temp_stats.min.is_none() {
+                                    record_min_temperature = Some(
+                                        record_min_temperature.map_or(value, |min| min.min(value)),
+                                    );
+                                }
 
-                                // Update max
-                                activity.temp_stats.max = Some(
-                                    activity.temp_stats.max.map_or(value, |max| max.max(value)),
-                                );
+                                // Only calculate from records if session didn't provide `max`
+                                if activity.temp_stats.max.is_none() {
+                                    record_max_temperature = Some(
+                                        record_max_temperature.map_or(value, |max| max.max(value)),
+                                    );
+                                }
 
-                                // Accumulate for avg
-                                sum_temperature += value as i64;
+                                // Only accumulate for `avg` if session didn't provide it
+                                if activity.temp_stats.avg.is_none() {
+                                    sum_temperature += value as i64;
+                                }
                             }
                         }
                         _ => {}
@@ -325,23 +375,47 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
         }
     }
 
-    // Calculate average values from accumulated sums
-    if activity.temp_stats.no_records > 0 {
+    // Assign record-based calculations if session didn't provide them
+    if let Some(min) = record_min_temperature {
+        activity.temp_stats.min = Some(min);
+    }
+    if let Some(max) = record_max_temperature {
+        activity.temp_stats.max = Some(max);
+    }
+
+    if let Some(max) = record_max_heartrate {
+        activity.heartrate_stats.max = Some(max);
+    }
+
+    if let Some(max) = record_max_speed {
+        activity.speed_stats.max = Some(max);
+    }
+
+    if let Some(min) = record_min_altitude {
+        activity.altitude_stats.min = Some(min);
+    }
+    if let Some(max) = record_max_altitude {
+        activity.altitude_stats.max = Some(max);
+    }
+
+    // Calculate average values.
+    // Only if we have accumulated data by counting `sum_` values before.
+    if sum_temperature != 0 {
         activity.temp_stats.avg =
             Some((sum_temperature / activity.temp_stats.no_records as i64) as i8);
     }
 
-    if activity.heartrate_stats.no_records > 0 {
+    if sum_heartrate > 0 {
         activity.heartrate_stats.avg =
             Some((sum_heartrate / activity.heartrate_stats.no_records as u64) as u8);
     }
 
-    if activity.speed_stats.no_records > 0 {
+    if sum_speed > 0 {
         activity.speed_stats.avg =
             Some((sum_speed / activity.speed_stats.no_records as u64) as u16);
     }
 
-    if activity.altitude_stats.no_records > 0 {
+    if sum_altitude > 0 {
         activity.altitude_stats.avg =
             Some((sum_altitude / activity.altitude_stats.no_records as u64) as u16);
     }
