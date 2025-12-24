@@ -210,12 +210,14 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                         // altitude
                         2 => {
                             if let Value::U16(v) = &field.value {
+                                activity.altitude_stats.no_records += 1;
                                 record.altitude = Some(*v);
                             }
                         }
                         // heart_rate (bpm)
                         3 => {
                             if let Value::U8(v) = &field.value {
+                                activity.heartrate_stats.no_records += 1;
                                 record.heartrate = Some(*v as i32);
                             }
                         }
@@ -228,12 +230,14 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                         // speed
                         6 => {
                             if let Value::U16(v) = &field.value {
+                                activity.speed_stats.no_records += 1;
                                 record.speed = Some(*v);
                             }
                         }
                         // temperature
                         13 => {
                             if let Value::I8(v) = &field.value {
+                                activity.temp_stats.no_records += 1;
                                 record.temperature = Some(*v);
                             }
                         }
@@ -300,6 +304,10 @@ fn main() -> Result<()> {
         );
     }
     println!("Total records: {}", activity.records.len());
+    println!("Temperature records: {}", activity.temp_stats.no_records);
+    println!("Altitude records: {}", activity.altitude_stats.no_records);
+    println!("Heartrate records: {}", activity.heartrate_stats.no_records);
+    println!("Speed records: {}", activity.speed_stats.no_records);
 
     Ok(())
 }
