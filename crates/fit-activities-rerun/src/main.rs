@@ -19,13 +19,13 @@ struct Args {
 #[derive(Debug, Default)]
 struct Record {
     timestamp: DateTime<Utc>,
-    position_lat: Option<f64>,
-    position_long: Option<f64>,
-    distance: Option<f64>,
-    speed: Option<f64>,
+    position_lat: Option<f32>,
+    position_long: Option<f32>,
+    distance: Option<u32>,
+    speed: Option<u16>,
     heartrate: Option<i32>,
-    temperature: Option<i32>,
-    altitude: Option<f64>,
+    temperature: Option<i8>,
+    altitude: Option<u16>,
 }
 
 #[derive(Debug)]
@@ -147,59 +147,35 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                     use fit_rust::protocol::value::Value;
 
                     match field.field_num {
+                        // sport
                         5 => {
-                            // sport (enum value)
                             println!("  Field 5 (sport): {:?}", field.value);
-                            match &field.value {
-                                Value::Enum(name) => {
-                                    activity.activity_type = Some(name.to_string());
-                                }
-                                Value::U8(v) => {
-                                    activity.activity_type = Some(format!("sport_{}", v));
-                                }
-                                _ => {}
+                            if let Value::Enum(name) = &field.value {
+                                activity.activity_type = Some(name.to_string());
                             }
                         }
+                        // total_elapsed_time
                         7 => {
-                            // total_elapsed_time (milliseconds)
                             println!("  Field 7 (total_elapsed_time): {:?}", field.value);
-                            let v = match &field.value {
-                                Value::U32(v) => Some(*v as f64),
-                                Value::F32(v) => Some(*v as f64),
-                                Value::F64(v) => Some(*v),
-                                _ => None,
-                            };
-                            if let Some(v) = v {
-                                activity.total_time = Some(v / 1000.0);
+                            if let Value::U32(v) = &field.value {
+                                activity.total_time = Some(*v as f64);
                             }
                         }
+                        // total_timer_time
                         8 => {
-                            // total_timer_time (milliseconds)
                             println!("  Field 8 (total_timer_time): {:?}", field.value);
-                            let v = match &field.value {
-                                Value::U32(v) => Some(*v as f64),
-                                Value::F32(v) => Some(*v as f64),
-                                Value::F64(v) => Some(*v),
-                                _ => None,
-                            };
-                            if let Some(v) = v {
-                                let timer_time = v / 1000.0;
+                            if let Value::U32(v) = &field.value {
+                                let timer_time = *v as f64;
                                 if let Some(total_time) = activity.total_time {
                                     activity.pause_time = Some(total_time - timer_time);
                                 }
                             }
                         }
+                        // total_distance
                         9 => {
-                            // total_distance (centimeters)
                             println!("  Field 9 (total_distance): {:?}", field.value);
-                            let v = match &field.value {
-                                Value::U32(v) => Some(*v as f64),
-                                Value::F32(v) => Some(*v as f64),
-                                Value::F64(v) => Some(*v),
-                                _ => None,
-                            };
-                            if let Some(v) = v {
-                                activity.total_distance = Some(v / 100.0);
+                            if let Value::U32(v) = &field.value {
+                                activity.total_distance = Some(*v as f64);
                             }
                         }
                         _ => {}
@@ -213,57 +189,53 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
 
                 for field in &msg.data.values {
                     match field.field_num {
+                        // timestamp
                         253 => {
-                            // timestamp (appears to already be Unix timestamp in this file)
                             if let Value::Time(v) = &field.value {
                                 record.timestamp =
                                     DateTime::from_timestamp(*v as i64, 0).unwrap_or_else(Utc::now);
                             }
                         }
+                        // position_lat
                         0 => {
-                            // position_lat (semicircles)
-                            if let Value::I32(v) = &field.value {
-                                let lat_semicircles = *v as f64;
-                                record.position_lat =
-                                    Some(lat_semicircles * (180.0 / 2_147_483_648.0));
+                            if let Value::F32(v) = &field.value {
+                                record.position_lat = Some(*v);
                             }
                         }
+                        // position_long
                         1 => {
-                            // position_long (semicircles)
-                            if let Value::I32(v) = &field.value {
-                                let long_semicircles = *v as f64;
-                                record.position_long =
-                                    Some(long_semicircles * (180.0 / 2_147_483_648.0));
+                            if let Value::F32(v) = &field.value {
+                                record.position_long = Some(*v);
                             }
                         }
+                        // altitude
                         2 => {
-                            // altitude (meters, scaled by 5, offset by 500)
                             if let Value::U16(v) = &field.value {
-                                record.altitude = Some((*v as f64 / 5.0) - 500.0);
+                                record.altitude = Some(*v);
                             }
                         }
+                        // heart_rate (bpm)
                         3 => {
-                            // heart_rate (bpm)
                             if let Value::U8(v) = &field.value {
                                 record.heartrate = Some(*v as i32);
                             }
                         }
+                        // distance
                         5 => {
-                            // distance (meters, scaled by 100)
                             if let Value::U32(v) = &field.value {
-                                record.distance = Some(*v as f64 / 100.0);
+                                record.distance = Some(*v);
                             }
                         }
+                        // speed
                         6 => {
-                            // speed (m/s, scaled by 1000)
                             if let Value::U16(v) = &field.value {
-                                record.speed = Some(*v as f64 / 1000.0);
+                                record.speed = Some(*v);
                             }
                         }
+                        // temperature
                         13 => {
-                            // temperature (degrees C)
                             if let Value::I8(v) = &field.value {
-                                record.temperature = Some(*v as i32);
+                                record.temperature = Some(*v);
                             }
                         }
                         _ => {}
