@@ -17,6 +17,13 @@ struct Args {
 }
 
 #[derive(Debug, Default)]
+struct TimeStats {
+    start: Option<DateTime<Utc>>,
+    total: Option<u32>,
+    pause: Option<u32>,
+}
+
+#[derive(Debug, Default)]
 struct Record {
     timestamp: DateTime<Utc>,
     position_lat: Option<f32>,
@@ -28,43 +35,49 @@ struct Record {
     altitude: Option<u16>,
 }
 
+#[derive(Debug, Default)]
+struct TemperatureStats {
+    no_records: usize,
+    max: Option<i32>,
+    min: Option<i32>,
+    avg: Option<i32>,
+}
+
+#[derive(Debug, Default)]
+struct AltitudeStats {
+    no_records: usize,
+    max: Option<i32>,
+    min: Option<i32>,
+    avg: Option<i32>,
+}
+
+#[derive(Debug, Default)]
+struct SpeedStats {
+    no_records: usize,
+    max: Option<i32>,
+    min: Option<i32>,
+    avg: Option<i32>,
+}
+
+#[derive(Debug, Default)]
+struct HeartrateStats {
+    no_records: usize,
+    max: Option<i32>,
+    min: Option<i32>,
+    avg: Option<i32>,
+}
+
 #[derive(Debug)]
 struct Activity {
     id: String,
     records: Vec<Record>,
     activity_type: Option<String>,
-
-    // time data
-    start_time: Option<DateTime<Utc>>,
-    total_time: Option<f64>,
-    pause_time: Option<f64>,
-
-    // distance data
+    time_stats: TimeStats,
     total_distance: Option<f64>,
-
-    // temperature data
-    no_temperature_records: usize,
-    max_temperature: Option<i32>,
-    min_temperature: Option<i32>,
-    avg_temperature: Option<i32>,
-
-    // altitude data
-    no_altitude_records: usize,
-    max_altitude: Option<f64>,
-    min_altitude: Option<f64>,
-    avg_altitude: Option<f64>,
-
-    // speed data
-    no_speed_records: usize,
-    max_speed: Option<f64>,
-    min_speed: Option<f64>,
-    avg_speed: Option<f64>,
-
-    // heartrate data
-    no_heartrate_records: usize,
-    max_heartrate: Option<i32>,
-    min_heartrate: Option<i32>,
-    avg_heartrate: Option<i32>,
+    temp_stats: TemperatureStats,
+    altitude_stats: AltitudeStats,
+    speed_stats: SpeedStats,
+    heartrate_stats: HeartrateStats,
 }
 
 impl Activity {
@@ -73,43 +86,29 @@ impl Activity {
             id,
             records: Vec::new(),
             activity_type: None,
-            start_time: None,
-            total_time: None,
-            pause_time: None,
+            time_stats: Default::default(),
             total_distance: None,
-            no_temperature_records: 0,
-            max_temperature: None,
-            min_temperature: None,
-            avg_temperature: None,
-            no_altitude_records: 0,
-            max_altitude: None,
-            min_altitude: None,
-            avg_altitude: None,
-            no_speed_records: 0,
-            max_speed: None,
-            min_speed: None,
-            avg_speed: None,
-            no_heartrate_records: 0,
-            max_heartrate: None,
-            min_heartrate: None,
-            avg_heartrate: None,
+            temp_stats: Default::default(),
+            altitude_stats: Default::default(),
+            speed_stats: Default::default(),
+            heartrate_stats: Default::default(),
         }
     }
 
     fn has_temperature_data(&self) -> bool {
-        self.no_temperature_records > 0
+        self.temp_stats.no_records > 0
     }
 
     fn has_altitude_data(&self) -> bool {
-        self.no_altitude_records > 0
+        self.altitude_stats.no_records > 0
     }
 
     fn has_speed_data(&self) -> bool {
-        self.no_speed_records > 0
+        self.speed_stats.no_records > 0
     }
 
     fn has_heartrate_data(&self) -> bool {
-        self.no_heartrate_records > 0
+        self.heartrate_stats.no_records > 0
     }
 }
 
@@ -158,16 +157,16 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                         7 => {
                             println!("  Field 7 (total_elapsed_time): {:?}", field.value);
                             if let Value::U32(v) = &field.value {
-                                activity.total_time = Some(*v as f64);
+                                activity.time_stats.total = Some(*v);
                             }
                         }
                         // total_timer_time
                         8 => {
                             println!("  Field 8 (total_timer_time): {:?}", field.value);
                             if let Value::U32(v) = &field.value {
-                                let timer_time = *v as f64;
-                                if let Some(total_time) = activity.total_time {
-                                    activity.pause_time = Some(total_time - timer_time);
+                                let timer_time = *v;
+                                if let Some(total) = activity.time_stats.total {
+                                    activity.time_stats.pause = Some(total - timer_time);
                                 }
                             }
                         }
@@ -286,17 +285,18 @@ fn main() -> Result<()> {
     if let Some(activity_type) = &activity.activity_type {
         println!("Type: {}", activity_type);
     }
-    if let Some(time) = activity.total_time {
-        println!("Total time: {:.2} seconds", time);
+    if let Some(time) = activity.time_stats.total {
+        println!("Total time: {} ms", time);
     }
-    if let Some(pause) = activity.pause_time {
-        println!("Pause time: {:.2} seconds", pause);
+    if let Some(pause) = activity.time_stats.pause {
+        println!("Pause time: {} ms", pause);
     }
     if let Some(distance) = activity.total_distance {
         println!(
-            "Distance: {:.2} meters ({:.2} km)",
+            "Distance: {} cm ({:.2} m) ({:.2} km)",
             distance,
-            distance / 1000.0
+            distance / 100.0,
+            distance / 100_000.0
         );
     }
     println!("Total records: {}", activity.records.len());
