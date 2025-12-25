@@ -972,18 +972,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9e8318fda24dc135cdd838f57a2b5ccb6e8f04ff6b6c65528c4bd9b5fcdc5cf6"
 dependencies = [
  "array-init",
- "binrw_derive 0.12.0",
- "bytemuck",
-]
-
-[[package]]
-name = "binrw"
-version = "0.13.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "173901312e9850391d4d7c1318c4e099fdc037d61870fca427429830efdb4e5f"
-dependencies = [
- "array-init",
- "binrw_derive 0.13.3",
+ "binrw_derive",
  "bytemuck",
 ]
 
@@ -992,19 +981,6 @@ name = "binrw_derive"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "db0832bed83248115532dfb25af54fae1c83d67a2e4e3e2f591c13062e372e7e"
-dependencies = [
- "either",
- "owo-colors",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "binrw_derive"
-version = "0.13.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb515fdd6f8d3a357c8e19b8ec59ef53880807864329b1cb1cba5c53bf76557e"
 dependencies = [
  "either",
  "owo-colors",
@@ -1373,6 +1349,7 @@ dependencies = [
  "iana-time-zone",
  "js-sys",
  "num-traits",
+ "serde",
  "wasm-bindgen",
  "windows-link 0.2.1",
 ]
@@ -1605,12 +1582,6 @@ checksum = "ec182b0ca2f35d8fc196cf3404988fd8b8c739a4d270ff118a398feb0cbec1ca"
 dependencies = [
  "unicode-segmentation",
 ]
-
-[[package]]
-name = "copyless"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2df960f5d869b2dd8532793fde43eb5427cceb126c929747a26823ab0eeb536"
 
 [[package]]
 name = "core-foundation"
@@ -3087,18 +3058,19 @@ dependencies = [
  "anyhow",
  "chrono",
  "clap",
- "fit-rust",
+ "fitparser",
  "rerun",
 ]
 
 [[package]]
-name = "fit-rust"
-version = "0.1.8"
-source = "git+https://github.com/zzyandzzy/fit-rust#d3523c72d921551ab3ef594f94da67315a06bcae"
+name = "fitparser"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1294b34d7e0e59469d9331a7fb70a00c9cc5fb51401605b652754dfb58a6e7e6"
 dependencies = [
- "binrw 0.13.3",
- "copyless",
- "paste",
+ "chrono",
+ "nom",
+ "serde",
 ]
 
 [[package]]
@@ -3915,7 +3887,7 @@ dependencies = [
  "js-sys",
  "log",
  "wasm-bindgen",
- "windows-core 0.58.0",
+ "windows-core 0.62.2",
 ]
 
 [[package]]
@@ -4582,7 +4554,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2a3ca583fed649ed7cd8c976b59422996472c6b08067308443e0b60c56e0a4ca"
 dependencies = [
  "bimap",
- "binrw 0.12.0",
+ "binrw",
  "byteorder",
  "crc32fast",
  "enumset",
@@ -4862,6 +4834,15 @@ name = "nohash-hasher"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2bf50223579dc7cdcfb3bfcacf7069ff68243f8c363f62ffa99cf000a6b9c451"
+
+[[package]]
+name = "nom"
+version = "8.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df9761775871bdef83bee530e60050f7e54b1105350d6884eb0fb4f46c2f9405"
+dependencies = [
+ "memchr",
+]
 
 [[package]]
 name = "notify"

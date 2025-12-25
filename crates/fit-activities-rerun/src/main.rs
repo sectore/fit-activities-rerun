@@ -1,6 +1,8 @@
 use anyhow::{Context, Result};
 use chrono::{DateTime, Utc};
 use clap::Parser;
+use fitparser::de::DecodeOption;
+use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
 
@@ -26,10 +28,10 @@ struct TimeStats {
 #[derive(Debug, Default)]
 struct Record {
     timestamp: DateTime<Utc>,
-    position_lat: Option<f32>,
-    position_long: Option<f32>,
+    position_lat: Option<f64>,
+    position_long: Option<f64>,
     distance: Option<u32>,
-    speed: Option<u16>,
+    speed: Option<f64>,
     heartrate: Option<u8>,
     temperature: Option<i8>,
     altitude: Option<u16>,
@@ -54,9 +56,9 @@ struct AltitudeStats {
 #[derive(Debug, Default)]
 struct SpeedStats {
     no_records: usize,
-    max: Option<u16>,
-    min: Option<u16>,
-    avg: Option<u16>,
+    max: Option<f64>,
+    min: Option<f64>,
+    avg: Option<f64>,
 }
 
 #[derive(Debug, Default)]
@@ -112,22 +114,55 @@ impl Activity {
     }
 }
 
+// Conversation formulas:
+// degrees = semicircles × (180 / 2^31)
+// semicircles = degrees * ( 2^31 / 180 )
+// @see https://learn.microsoft.com/en-us/previous-versions/windows/embedded/cc510650(v=msdn.10)
+const SEMICIRCLES_TO_DEGREES: f64 = 180.0 / (1_u64 << 31) as f64;
+
+fn semicircle_to_degree(semicircle: i32) -> f64 {
+    (f64::from(semicircle) * SEMICIRCLES_TO_DEGREES)
+}
+
+fn format_distance(meters: f64) -> String {
+    if meters < 1000.0 {
+        format!("{}m", meters as u32)
+    } else {
+        format!("{:.1}km", meters / 1000.0)
+    }
+}
+
+fn to_km_per_hour(meters_per_second: f64) -> f64 {
+    meters_per_second * 3.6
+}
+
+fn format_speed(meters_per_second: f64) -> String {
+    format!("{:.2} km/h", to_km_per_hour(meters_per_second)).replace(".00", "")
+}
+
 fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
-    use fit_rust::Fit;
-    use fit_rust::protocol::FitMessage;
-    use fit_rust::protocol::message_type::MessageType;
+    use fitparser::profile::MesgNum;
+    use std::io::BufReader;
 
-    // Read and parse FIT file
-    let data = fs::read(file_path)
-        .with_context(|| format!("Failed to read file: {}", file_path.display()))?;
+    let path = std::path::Path::new(file_path);
+    // Open and parse FIT file
+    let fp = fs::File::open(path)
+        .with_context(|| format!("Failed to open file: {}", file_path.display()))?;
 
-    let fit = Fit::read(data)
+    let mut reader = BufReader::new(fp);
+    let decode_opts = HashSet::from_iter([
+        DecodeOption::DropUnknownFields,
+        DecodeOption::DropUnknownMessages,
+    ]);
+
+    let data_records = fitparser::de::from_reader_with_options(&mut reader, &decode_opts)
         .with_context(|| format!("Failed to parse FIT file: {}", file_path.display()))?;
 
     // Create activity ID from filename
-    let id = file_path
-        .file_stem()
-        .and_then(|s| s.to_str())
+    let id = path
+        .file_name()
+        .unwrap()
+        .to_str()
         .unwrap_or("unknown")
         .replace(' ', "_");
 
@@ -137,128 +172,115 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
     let mut record_min_temperature: Option<i8> = None;
     let mut record_max_temperature: Option<i8> = None;
     let mut record_max_heartrate: Option<u8> = None;
-    let mut record_max_speed: Option<u16> = None;
+    let mut record_max_speed: Option<f64> = None;
     let mut record_min_altitude: Option<u16> = None;
     let mut record_max_altitude: Option<u16> = None;
 
     // Sum variables for calculating averages
     let mut sum_temperature: i64 = 0;
     let mut sum_heartrate: u64 = 0;
-    let mut sum_speed: u64 = 0;
+    let mut sum_speed: f64 = 0.0;
     let mut sum_altitude: u64 = 0;
 
     println!("=== Parsing FIT file ===");
-    println!("Total messages: {}", fit.data.len());
+    println!("Total records: {}", data_records.len());
 
-    // Parse Session messages
-    for message in &fit.data {
-        match message {
-            FitMessage::Data(msg) if msg.data.message_type == MessageType::Session => {
+    let mut idx = 0;
+
+    // Parse all records
+    for record in data_records {
+        match record.kind() {
+            MesgNum::Session => {
                 println!("\n--- Parsing Session Data ---");
 
-                for field in &msg.data.values {
-                    use fit_rust::protocol::value::Value;
+                for field in record.into_vec() {
+                    let field_name = field.name();
+                    println!("session field: {} {:?}", field_name, field.value());
 
-                    match field.field_num {
-                        // sport
-                        5 => {
-                            println!("  Field 5 (sport): {:?}", field.value);
-                            if let Value::Enum(name) = &field.value {
-                                activity.activity_type = Some(name.to_string());
+                    match field_name {
+                        "sport" => {
+                            if let fitparser::Value::String(sport) = field.value() {
+                                activity.activity_type = Some(sport.clone());
                             }
                         }
-                        // total_elapsed_time
-                        7 => {
-                            println!("  Field 7 (total_elapsed_time): {:?}", field.value);
-                            if let Value::U32(v) = &field.value {
-                                activity.time_stats.total = Some(*v);
+                        "total_elapsed_time" => {
+                            if let fitparser::Value::Float64(v) = field.value() {
+                                activity.time_stats.total = Some((v * 1000.0) as u32);
                             }
                         }
-                        // total_timer_time
-                        8 => {
-                            println!("  Field 8 (total_timer_time): {:?}", field.value);
-                            if let Value::U32(v) = &field.value {
-                                let timer_time = *v;
+                        "total_timer_time" => {
+                            if let fitparser::Value::Float64(v) = field.value() {
+                                let timer_time = (v * 1000.0) as u32;
                                 if let Some(total) = activity.time_stats.total {
                                     activity.time_stats.pause = Some(total - timer_time);
                                 }
                             }
                         }
-                        // total_distance
-                        9 => {
-                            println!("  Field 9 (total_distance): {:?}", field.value);
-                            if let Value::U32(v) = &field.value {
-                                activity.total_distance = Some(*v as f64);
+                        "total_distance" => {
+                            if let fitparser::Value::Float64(v) = field.value() {
+                                activity.total_distance = Some(*v);
                             }
                         }
-                        // enhanced_avg_speed
-                        14 => {
-                            if let Value::U16(v) = &field.value {
+                        "enhanced_avg_speed" | "avg_speed" => {
+                            if let fitparser::Value::Float64(v) = field.value() {
                                 activity.speed_stats.avg = Some(*v);
                             }
                         }
-                        // enhanced_max_speed
-                        15 => {
-                            if let Value::U16(v) = &field.value {
+                        "enhanced_max_speed" | "max_speed" => {
+                            if let fitparser::Value::Float64(v) = field.value() {
                                 activity.speed_stats.max = Some(*v);
                             }
                         }
-                        // avg_heart_rate
-                        16 => {
-                            if let Value::U8(v) = &field.value {
+                        "avg_heart_rate" => {
+                            if let fitparser::Value::UInt8(v) = field.value() {
                                 activity.heartrate_stats.avg = Some(*v);
                             }
                         }
-                        // max_heart_rate
-                        17 => {
-                            if let Value::U8(v) = &field.value {
+                        "max_heart_rate" => {
+                            if let fitparser::Value::UInt8(v) = field.value() {
                                 activity.heartrate_stats.max = Some(*v);
                             }
                         }
-                        // NOTE: Session does NOT provide:
-                        // - Temperature stats (min, max, avg) - calculated from records
-                        // - Altitude stats (min, max, avg) - calculated from records
-                        // - min_heart_rate - calculated from records
-                        // - min_speed - calculated from records
                         _ => {
-                            // Print unknown fields to help identify field numbers
-                            println!("  Field {}: {:?}", field.field_num, field.value);
+                            // Print all fields for debugging
+                            println!("  {}: {:?}", field_name, field.value());
                         }
                     }
                 }
             }
-            FitMessage::Data(msg) if msg.data.message_type == MessageType::Record => {
-                use fit_rust::protocol::value::Value;
+            MesgNum::Record => {
+                let mut rec = Record::default();
 
-                let mut record = Record::default();
+                for field in record.into_vec() {
+                    let field_name = field.name();
+                    if idx == 11 {
+                        println!("idx: {}", idx);
+                        println!("record field: {} {:?}", field_name, field.value());
+                    }
 
-                for field in &msg.data.values {
-                    match field.field_num {
-                        // `timestamp`
-                        253 => {
-                            if let Value::Time(v) = &field.value {
-                                record.timestamp =
-                                    DateTime::from_timestamp(*v as i64, 0).unwrap_or_else(Utc::now);
+                    match field_name {
+                        "timestamp" => {
+                            if let fitparser::Value::Timestamp(ts) = field.value() {
+                                rec.timestamp = ts.with_timezone(&Utc);
                             }
                         }
-                        // `position_lat`
-                        0 => {
-                            if let Value::F32(v) = &field.value {
-                                record.position_lat = Some(*v);
+                        "position_lat" => {
+                            if let fitparser::Value::SInt32(v) = field.value() {
+                                let value = semicircle_to_degree(*v);
+                                rec.position_lat = Some(value);
                             }
                         }
-                        // `position_long`
-                        1 => {
-                            if let Value::F32(v) = &field.value {
-                                record.position_long = Some(*v);
+                        "position_long" => {
+                            if let fitparser::Value::SInt32(v) = field.value() {
+                                let value = semicircle_to_degree(*v);
+                                rec.position_long = Some(value);
                             }
                         }
-                        // altitude
-                        2 => {
-                            if let Value::U16(v) = &field.value {
+                        "altitude" | "enhanced_altitude" => {
+                            if let fitparser::Value::Float64(v) = field.value() {
                                 activity.altitude_stats.no_records += 1;
-                                let value = *v;
-                                record.altitude = Some(value);
+                                let value = (*v * 5.0 + 500.0) as u16;
+                                rec.altitude = Some(value);
 
                                 // Only calculate from records if session didn't provide `min`
                                 if activity.altitude_stats.min.is_none() {
@@ -280,12 +302,11 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                 }
                             }
                         }
-                        // heart_rate (bpm)
-                        3 => {
-                            if let Value::U8(v) = &field.value {
+                        "heart_rate" => {
+                            if let fitparser::Value::UInt8(v) = field.value() {
                                 activity.heartrate_stats.no_records += 1;
                                 let value = *v;
-                                record.heartrate = Some(value);
+                                rec.heartrate = Some(value);
 
                                 // Always calculate `min` (session never provides it)
                                 activity.heartrate_stats.min = Some(
@@ -308,18 +329,16 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                 }
                             }
                         }
-                        // distance
-                        5 => {
-                            if let Value::U32(v) = &field.value {
-                                record.distance = Some(*v);
+                        "distance" => {
+                            if let fitparser::Value::Float64(v) = field.value() {
+                                rec.distance = Some((v * 100.0) as u32);
                             }
                         }
-                        // speed
-                        6 => {
-                            if let Value::U16(v) = &field.value {
+                        "speed" | "enhanced_speed" => {
+                            if let fitparser::Value::Float64(v) = field.value() {
                                 activity.speed_stats.no_records += 1;
                                 let value = *v;
-                                record.speed = Some(value);
+                                rec.speed = Some(value);
 
                                 // Always calculate `min` (session never provides it)
                                 activity.speed_stats.min = Some(
@@ -334,16 +353,15 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
 
                                 // Only accumulate for `avg` if session didn't provide it
                                 if activity.speed_stats.avg.is_none() {
-                                    sum_speed += value as u64;
+                                    sum_speed += value;
                                 }
                             }
                         }
-                        // temperature
-                        13 => {
-                            if let Value::I8(v) = &field.value {
+                        "temperature" => {
+                            if let fitparser::Value::SInt8(v) = field.value() {
                                 activity.temp_stats.no_records += 1;
                                 let value = *v;
-                                record.temperature = Some(value);
+                                rec.temperature = Some(value);
 
                                 // Only calculate from records if session didn't provide `min`
                                 if activity.temp_stats.min.is_none() {
@@ -369,7 +387,8 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                     }
                 }
 
-                activity.records.push(record);
+                activity.records.push(rec);
+                idx += 1;
             }
             _ => {}
         }
@@ -410,9 +429,8 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
             Some((sum_heartrate / activity.heartrate_stats.no_records as u64) as u8);
     }
 
-    if sum_speed > 0 {
-        activity.speed_stats.avg =
-            Some((sum_speed / activity.speed_stats.no_records as u64) as u16);
+    if sum_speed > 0.0 {
+        activity.speed_stats.avg = Some(sum_speed / activity.speed_stats.no_records as f64);
     }
 
     if sum_altitude > 0 {
@@ -427,7 +445,15 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
     println!("\n--- Stats Summary ---");
     println!("Temperature: {:?}", activity.temp_stats);
     println!("Heartrate: {:?}", activity.heartrate_stats);
-    println!("Speed: {:?}", activity.speed_stats);
+    if let Some(min) = activity.speed_stats.min {
+        println!("Speed min: {}", format_speed(min));
+    }
+    if let Some(max) = activity.speed_stats.max {
+        println!("Speed max: {}", format_speed(max));
+    }
+    if let Some(avg) = activity.speed_stats.avg {
+        println!("Speed avg: {}", format_speed(avg));
+    }
     println!("Altitude: {:?}", activity.altitude_stats);
 
     // Print first 3 records as samples
@@ -472,12 +498,7 @@ fn main() -> Result<()> {
         println!("Pause time: {} ms", pause);
     }
     if let Some(distance) = activity.total_distance {
-        println!(
-            "Distance: {} cm ({:.2} m) ({:.2} km)",
-            distance,
-            distance / 100.0,
-            distance / 100_000.0
-        );
+        println!("Distance: {})", format_distance(distance));
     }
     println!("Total records: {}", activity.records.len());
     println!("Temperature records: {}", activity.temp_stats.no_records);
