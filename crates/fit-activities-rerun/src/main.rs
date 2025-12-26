@@ -190,14 +190,6 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
 
     let mut activity = Activity::new(id);
 
-    // Record-based fallback tracking (only used if session doesn't provide values)
-    let mut record_min_temperature: Option<Temperature> = None;
-    let mut record_max_temperature: Option<Temperature> = None;
-    let mut record_max_heartrate: Option<Heartrate> = None;
-    let mut record_max_speed: Option<Speed> = None;
-    let mut record_min_altitude: Option<Altitude> = None;
-    let mut record_max_altitude: Option<Altitude> = None;
-
     // Sum variables for calculating averages
     let mut sum_temperature: i64 = 0;
     let mut sum_heartrate: u64 = 0;
@@ -244,30 +236,6 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                 activity.total_distance = Some(d);
                             }
                         }
-                        "enhanced_avg_speed" | "avg_speed" => {
-                            if let fitparser::Value::Float64(v) = field.value() {
-                                let s = Speed(*v);
-                                activity.speed_stats.avg = Some(s);
-                            }
-                        }
-                        "enhanced_max_speed" | "max_speed" => {
-                            if let fitparser::Value::Float64(v) = field.value() {
-                                let s = Speed(*v);
-                                activity.speed_stats.max = Some(s);
-                            }
-                        }
-                        "avg_heart_rate" => {
-                            if let fitparser::Value::UInt8(v) = field.value() {
-                                let h = Heartrate(*v);
-                                activity.heartrate_stats.avg = Some(h);
-                            }
-                        }
-                        "max_heart_rate" => {
-                            if let fitparser::Value::UInt8(v) = field.value() {
-                                let h = Heartrate(*v);
-                                activity.heartrate_stats.max = Some(h);
-                            }
-                        }
                         _ => {
                             // Print all fields for debugging
                             println!("  {}: {:?}", field_name, field.value());
@@ -306,36 +274,34 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                         "altitude" | "enhanced_altitude" => {
                             if let fitparser::Value::Float64(v) = field.value() {
                                 activity.altitude_stats.no_records += 1;
+
                                 let value = Altitude::from_unscaled(*v);
                                 rec.altitude = Some(value);
 
-                                // Only calculate from records if session didn't provide `min`
-                                if activity.altitude_stats.min.is_none() {
-                                    record_min_altitude = Some(
-                                        record_min_altitude.map_or(value, |prev| prev.min(value)),
-                                    );
-                                }
+                                activity.altitude_stats.min = Some(
+                                    activity
+                                        .altitude_stats
+                                        .min
+                                        .map_or(value, |prev| prev.min(value)),
+                                );
 
-                                // Only calculate from records if session didn't provide `max`
-                                if activity.altitude_stats.max.is_none() {
-                                    record_max_altitude = Some(
-                                        record_max_altitude.map_or(value, |prev| prev.max(value)),
-                                    );
-                                }
+                                activity.altitude_stats.max = Some(
+                                    activity
+                                        .altitude_stats
+                                        .max
+                                        .map_or(value, |prev| prev.max(value)),
+                                );
 
-                                // Only accumulate for `avg` if session didn't provide it
-                                if activity.altitude_stats.avg.is_none() {
-                                    sum_altitude += value.0 as u64;
-                                }
+                                sum_altitude += value.0 as u64;
                             }
                         }
                         "heart_rate" => {
                             if let fitparser::Value::UInt8(v) = field.value() {
                                 activity.heartrate_stats.no_records += 1;
+
                                 let value = Heartrate(*v);
                                 rec.heartrate = Some(value);
 
-                                // Always calculate `min` (session never provides it)
                                 activity.heartrate_stats.min = Some(
                                     activity
                                         .heartrate_stats
@@ -343,17 +309,14 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                         .map_or(value, |prev| prev.min(value)),
                                 );
 
-                                // Only calculate from records if session didn't provide `max`
-                                if activity.heartrate_stats.max.is_none() {
-                                    record_max_heartrate = Some(
-                                        record_max_heartrate.map_or(value, |prev| prev.max(value)),
-                                    );
-                                }
+                                activity.heartrate_stats.max = Some(
+                                    activity
+                                        .heartrate_stats
+                                        .max
+                                        .map_or(value, |prev| prev.max(value)),
+                                );
 
-                                // Only accumulate for `avg` if session didn't provide it
-                                if activity.heartrate_stats.avg.is_none() {
-                                    sum_heartrate += value.0 as u64;
-                                }
+                                sum_heartrate += value.0 as u64;
                             }
                         }
                         "distance" => {
@@ -365,10 +328,10 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                         "speed" | "enhanced_speed" => {
                             if let fitparser::Value::Float64(v) = field.value() {
                                 activity.speed_stats.no_records += 1;
+
                                 let value = Speed(*v);
                                 rec.speed = Some(value);
 
-                                // Always calculate `min` (session never provides it)
                                 activity.speed_stats.min = Some(
                                     activity
                                         .speed_stats
@@ -376,43 +339,38 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
                                         .map_or(value, |prev| prev.min(value)),
                                 );
 
-                                // Only calculate from records if session didn't provide `max`
-                                if activity.speed_stats.max.is_none() {
-                                    record_max_speed = Some(
-                                        record_max_speed.map_or(value, |prev| prev.max(value)),
-                                    );
-                                }
+                                activity.speed_stats.max = Some(
+                                    activity
+                                        .speed_stats
+                                        .max
+                                        .map_or(value, |prev| prev.max(value)),
+                                );
 
-                                // Only accumulate for `avg` if session didn't provide it
-                                if activity.speed_stats.avg.is_none() {
-                                    sum_speed += value.0;
-                                }
+                                sum_speed += value.0;
                             }
                         }
                         "temperature" => {
                             if let fitparser::Value::SInt8(v) = field.value() {
                                 activity.temp_stats.no_records += 1;
+
                                 let value = Temperature(*v);
                                 rec.temperature = Some(value);
 
-                                // Only calculate from records if session didn't provide `min`
-                                if activity.temp_stats.min.is_none() {
-                                    record_min_temperature = Some(
-                                        record_min_temperature.map_or(value, |min| min.min(value)),
-                                    );
-                                }
+                                activity.temp_stats.min = Some(
+                                    activity
+                                        .temp_stats
+                                        .min
+                                        .map_or(value, |prev| prev.min(value)),
+                                );
 
-                                // Only calculate from records if session didn't provide `max`
-                                if activity.temp_stats.max.is_none() {
-                                    record_max_temperature = Some(
-                                        record_max_temperature.map_or(value, |max| max.max(value)),
-                                    );
-                                }
+                                activity.temp_stats.max = Some(
+                                    activity
+                                        .temp_stats
+                                        .max
+                                        .map_or(value, |prev| prev.max(value)),
+                                );
 
-                                // Only accumulate for `avg` if session didn't provide it
-                                if activity.temp_stats.avg.is_none() {
-                                    sum_temperature += value.0 as i64;
-                                }
+                                sum_temperature += value.0 as i64;
                             }
                         }
                         _ => {}
@@ -424,29 +382,6 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
             }
             _ => {}
         }
-    }
-
-    // Assign record-based calculations if session didn't provide them
-    if let Some(min) = record_min_temperature {
-        activity.temp_stats.min = Some(min);
-    }
-    if let Some(max) = record_max_temperature {
-        activity.temp_stats.max = Some(max);
-    }
-
-    if let Some(max) = record_max_heartrate {
-        activity.heartrate_stats.max = Some(max);
-    }
-
-    if let Some(max) = record_max_speed {
-        activity.speed_stats.max = Some(max);
-    }
-
-    if let Some(min) = record_min_altitude {
-        activity.altitude_stats.min = Some(min);
-    }
-    if let Some(max) = record_max_altitude {
-        activity.altitude_stats.max = Some(max);
     }
 
     // Calculate average values.
