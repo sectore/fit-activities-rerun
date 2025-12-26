@@ -21,6 +21,7 @@ rerun = { version = "0.28.1", default-features = false, features = [
     "sdk",
     "map_view",
     "server",
+    "clap"
 ] }
 clap = { version = "4.5", features = ["derive"] }
 anyhow = "1.0"
