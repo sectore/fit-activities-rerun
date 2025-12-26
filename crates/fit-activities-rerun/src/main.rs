@@ -38,36 +38,18 @@ struct Record {
 }
 
 #[derive(Debug, Default)]
-struct TemperatureStats {
+struct Stats<T> {
     no_records: usize,
-    max: Option<i8>,
-    min: Option<i8>,
-    avg: Option<i8>,
+    max: Option<T>,
+    min: Option<T>,
+    avg: Option<T>,
 }
 
-#[derive(Debug, Default)]
-struct AltitudeStats {
-    no_records: usize,
-    max: Option<u16>,
-    min: Option<u16>,
-    avg: Option<u16>,
-}
-
-#[derive(Debug, Default)]
-struct SpeedStats {
-    no_records: usize,
-    max: Option<f64>,
-    min: Option<f64>,
-    avg: Option<f64>,
-}
-
-#[derive(Debug, Default)]
-struct HeartrateStats {
-    no_records: usize,
-    max: Option<u8>,
-    min: Option<u8>,
-    avg: Option<u8>,
-}
+// Type aliases for domain-specific stats
+type TemperatureStats = Stats<i8>;
+type AltitudeStats = Stats<u16>;
+type SpeedStats = Stats<f64>;
+type HeartrateStats = Stats<u8>;
 
 #[derive(Debug)]
 struct Activity {
