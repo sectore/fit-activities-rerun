@@ -1,11 +1,33 @@
 use anyhow::{Context, Result};
 use chrono::{DateTime, Local};
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 use fitparser::de::DecodeOption;
+use rerun::{
+    GeoLineStrings, GeoPoints, MediaType, Radius, RecordingStream, Scalars, SeriesLines,
+    SeriesPoints, TextDocument,
+    components::{Color, MarkerShape},
+    external::re_sdk_types::blueprint::components::MapProvider,
+};
 use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
 use std::time::Duration;
+
+#[derive(Debug, Clone, Copy, Default, ValueEnum)]
+#[value(rename_all = "lowercase")]
+enum MapStyle {
+    /// OpenStreetMap
+    #[default]
+    Osm,
+    /// Dark style (Mapbox)
+    Dark,
+    /// Light style (Mapbox)
+    Light,
+    /// Streets style (Mapbox)
+    Streets,
+    /// Satellite style (Mapbox)
+    Satellite,
+}
 
 #[derive(Parser, Debug)]
 #[command(
@@ -17,8 +39,11 @@ struct Args {
     #[command(flatten)]
     rerun: rerun::clap::RerunArgs,
     /// Path to the .fit file
-    #[clap(long, value_name = "FILE")]
+    #[clap(long, value_name = "FILE", required = true)]
     fit: PathBuf,
+    /// Map tile style. To use styles other than 'osm', set the environment variable RERUN_MAPBOX_ACCESS_TOKEN to enable Mapbox instead.
+    #[clap(long, value_enum, default_value_t)]
+    map: MapStyle,
 }
 
 #[derive(Debug, Default)]
@@ -467,7 +492,6 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
 fn main() -> Result<()> {
     // env
     dotenvy::dotenv().ok();
-    let _mapbox_token = std::env::var("RERUN_MAPBOX_ACCESS_TOKEN").ok();
 
     let args = Args::parse();
 
@@ -484,17 +508,23 @@ fn main() -> Result<()> {
         anyhow::bail!("Error: File does not exist: '{}'", args.fit.display());
     }
 
+    let use_mapbox = std::env::var("RERUN_MAPBOX_ACCESS_TOKEN").is_ok();
+    let map_provider = match args.map {
+        MapStyle::Dark if use_mapbox => MapProvider::MapboxDark,
+        MapStyle::Light if use_mapbox => MapProvider::MapboxLight,
+        MapStyle::Streets if use_mapbox => MapProvider::MapboxStreets,
+        MapStyle::Satellite if use_mapbox => MapProvider::MapboxSatellite,
+        _ => MapProvider::OpenStreetMap,
+    };
+
     // parse data
     let activity = parse_fit_file(&args.fit)?;
 
     let (rec, _serve_guard) = args.rerun.init("fit_activities_rerun_rs")?;
-    run(&rec, &activity)
+    run(&rec, &activity, &map_provider)
 }
 
-fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
-    use rerun::components::{Color, MarkerShape};
-    use rerun::{SeriesLines, SeriesPoints};
-
+fn run(rec: &RecordingStream, act: &Activity, _map_provider: &MapProvider) -> anyhow::Result<()> {
     let id = &act.id;
     let data_ids = act.get_available_data_ids();
 
@@ -658,7 +688,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
 
     rec.log_static(
         format!("{id}/info"),
-        &rerun::TextDocument::new(info_md).with_media_type(rerun::MediaType::markdown()),
+        &TextDocument::new(info_md).with_media_type(MediaType::markdown()),
     )?;
 
     // Collect geo positions from records
@@ -675,26 +705,26 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
         // Start point
         rec.log_static(
             format!("{id}/route/all/start"),
-            &rerun::GeoPoints::from_lat_lon([first])
-                .with_radii([rerun::Radius::new_ui_points(6.0)])
-                .with_colors([rerun::Color::from(0xF79311FF)]),
+            &GeoPoints::from_lat_lon([first])
+                .with_radii([Radius::new_ui_points(6.0)])
+                .with_colors([Color::from(0xF79311FF)]),
         )?;
 
         // All route
         rec.log_static(
             format!("{id}/route/all"),
-            &rerun::GeoLineStrings::from_lat_lon([positions.clone()])
-                .with_radii([rerun::Radius::new_ui_points(2.0)])
-                .with_colors([rerun::Color::from(0xF793117F)]),
+            &GeoLineStrings::from_lat_lon([positions.clone()])
+                .with_radii([Radius::new_ui_points(2.0)])
+                .with_colors([Color::from(0xF793117F)]),
         )?;
 
         // Finish point
         if let Some(&last) = positions.last() {
             rec.log_static(
                 format!("{id}/route/all/finish"),
-                &rerun::GeoPoints::from_lat_lon([last])
-                    .with_radii([rerun::Radius::new_ui_points(6.0)])
-                    .with_colors([rerun::Color::from(0xF793117F)]),
+                &GeoPoints::from_lat_lon([last])
+                    .with_radii([Radius::new_ui_points(6.0)])
+                    .with_colors([Color::from(0xF793117F)]),
             )?;
         }
     }
@@ -714,84 +744,75 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
             // Log route of current record
             rec.log(
                 format!("{id}/route/current"),
-                &rerun::GeoLineStrings::from_lat_lon([route_positions.clone()])
-                    .with_radii([rerun::Radius::new_ui_points(2.0)])
-                    .with_colors([rerun::Color::from(0xF79311FF)]),
+                &GeoLineStrings::from_lat_lon([route_positions.clone()])
+                    .with_radii([Radius::new_ui_points(2.0)])
+                    .with_colors([Color::from(0xF79311FF)]),
             )?;
 
             // Log point of current record
             rec.log(
                 format!("{id}/route/current/location"),
-                &rerun::GeoPoints::from_lat_lon([pos])
-                    .with_radii([rerun::Radius::new_ui_points(6.0)])
-                    .with_colors([rerun::Color::from(0xF79311FF)]),
+                &GeoPoints::from_lat_lon([pos])
+                    .with_radii([Radius::new_ui_points(6.0)])
+                    .with_colors([Color::from(0xF79311FF)]),
             )?;
         }
 
         // Log record data: value / max / avg
         if let Some(speed) = record.speed {
-            rec.log(format!("{id}/speed"), &rerun::Scalars::new([speed.0]))?;
+            rec.log(format!("{id}/speed"), &Scalars::new([speed.0]))?;
             if act.speed_stats.max.is_some_and(|m| m.0 == speed.0) {
-                rec.log(format!("{id}/speed/max"), &rerun::Scalars::new([speed.0]))?;
+                rec.log(format!("{id}/speed/max"), &Scalars::new([speed.0]))?;
             }
             if act.speed_stats.min.is_some_and(|m| m.0 == speed.0) {
-                rec.log(format!("{id}/speed/min"), &rerun::Scalars::new([speed.0]))?;
+                rec.log(format!("{id}/speed/min"), &Scalars::new([speed.0]))?;
             }
             if let Some(avg) = act.speed_stats.avg {
-                rec.log(format!("{id}/speed/avg"), &rerun::Scalars::new([avg.0]))?;
+                rec.log(format!("{id}/speed/avg"), &Scalars::new([avg.0]))?;
             }
         }
 
         if let Some(heartrate) = record.heartrate {
             let value = heartrate.0 as f64;
-            rec.log(format!("{id}/heartrate"), &rerun::Scalars::new([value]))?;
+            rec.log(format!("{id}/heartrate"), &Scalars::new([value]))?;
             if act.heartrate_stats.max.is_some_and(|m| m == heartrate) {
-                rec.log(format!("{id}/heartrate/max"), &rerun::Scalars::new([value]))?;
+                rec.log(format!("{id}/heartrate/max"), &Scalars::new([value]))?;
             }
             if act.heartrate_stats.min.is_some_and(|m| m == heartrate) {
-                rec.log(format!("{id}/heartrate/min"), &rerun::Scalars::new([value]))?;
+                rec.log(format!("{id}/heartrate/min"), &Scalars::new([value]))?;
             }
             if let Some(avg) = act.heartrate_stats.avg {
-                rec.log(
-                    format!("{id}/heartrate/avg"),
-                    &rerun::Scalars::new([avg.0 as f64]),
-                )?;
+                rec.log(format!("{id}/heartrate/avg"), &Scalars::new([avg.0 as f64]))?;
             }
         }
 
         if let Some(altitude) = record.altitude {
             let value = altitude.0;
-            rec.log(format!("{id}/altitude"), &rerun::Scalars::new([value]))?;
+            rec.log(format!("{id}/altitude"), &Scalars::new([value]))?;
             if act.altitude_stats.max.is_some_and(|m| m == altitude) {
-                rec.log(format!("{id}/altitude/max"), &rerun::Scalars::new([value]))?;
+                rec.log(format!("{id}/altitude/max"), &Scalars::new([value]))?;
             }
             if act.altitude_stats.min.is_some_and(|m| m == altitude) {
-                rec.log(format!("{id}/altitude/min"), &rerun::Scalars::new([value]))?;
+                rec.log(format!("{id}/altitude/min"), &Scalars::new([value]))?;
             }
             if let Some(avg) = act.altitude_stats.avg {
-                rec.log(format!("{id}/altitude/avg"), &rerun::Scalars::new([avg.0]))?;
+                rec.log(format!("{id}/altitude/avg"), &Scalars::new([avg.0]))?;
             }
         }
 
         if let Some(temperature) = record.temperature {
             let value = temperature.0 as f64;
-            rec.log(format!("{id}/temperature"), &rerun::Scalars::new([value]))?;
+            rec.log(format!("{id}/temperature"), &Scalars::new([value]))?;
             if act.temp_stats.max.is_some_and(|m| m == temperature) {
-                rec.log(
-                    format!("{id}/temperature/max"),
-                    &rerun::Scalars::new([value]),
-                )?;
+                rec.log(format!("{id}/temperature/max"), &Scalars::new([value]))?;
             }
             if act.temp_stats.min.is_some_and(|m| m == temperature) {
-                rec.log(
-                    format!("{id}/temperature/min"),
-                    &rerun::Scalars::new([value]),
-                )?;
+                rec.log(format!("{id}/temperature/min"), &Scalars::new([value]))?;
             }
             if let Some(avg) = act.temp_stats.avg {
                 rec.log(
                     format!("{id}/temperature/avg"),
-                    &rerun::Scalars::new([avg.0 as f64]),
+                    &Scalars::new([avg.0 as f64]),
                 )?;
             }
         }
