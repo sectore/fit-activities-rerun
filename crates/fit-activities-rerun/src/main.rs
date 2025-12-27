@@ -549,6 +549,9 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
         act.records.len()
     );
 
+    // --
+    // START-TIME
+    // --
     if let Some(start_time) = act.time_stats.start {
         info_md.push_str(&format!(
             "\n- START **{}**",
@@ -556,28 +559,33 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
         ));
     }
 
-    if act.time_stats.total.is_some() || act.time_stats.pause.is_some() {
-        let duration_parts = [
-            act.time_stats
-                .total
-                .map(|t| format!("**{}** (total)", format_time(&t))),
-            act.time_stats
-                .pause
-                .filter(|&p| p > Duration::ZERO)
-                .map(|p| format!("**{}** (pause)", format_time(&p))),
-        ]
-        .into_iter()
-        .flatten()
-        .collect::<Vec<_>>()
-        .join(" ");
+    // --
+    // DURATION
+    // --
+    let mut duration_parts = Vec::new();
 
-        info_md.push_str(&format!("\n- DURATION {duration_parts}"));
+    if let Some(total) = &act.time_stats.total {
+        duration_parts.push(format!("**{}** (total)", format_time(total)));
     }
 
+    if let Some(pause) = act.time_stats.pause.filter(|&p| p > Duration::ZERO) {
+        duration_parts.push(format!("**{}** (pause)", format_time(&pause)));
+    }
+
+    if !duration_parts.is_empty() {
+        info_md.push_str(&format!("\n- DURATION {}", duration_parts.join(" ")));
+    }
+
+    // --
+    // DISTANCE
+    // --
     if let Some(distance) = &act.total_distance {
         info_md.push_str(&format!("\n- DISTANCE **{}**", distance.format()));
     }
 
+    // --
+    // TABLE: header
+    // --
     info_md.push_str("\n\n###### **RECORDS SUMMARY**");
     info_md.push_str("\n| | max | min | avg | no. rec.");
     info_md.push_str("\n| --- | --- | --- | --- | --- |");
@@ -588,6 +596,9 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
             .unwrap_or_else(|| "-- |".to_string())
     };
 
+    // --
+    // TABLE: Speed
+    // --
     if act.has_speed_data() {
         let s = &act.speed_stats;
         info_md.push_str(&format!(
@@ -599,6 +610,9 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
         ));
     }
 
+    // --
+    // TABLE: Heartrate
+    // --
     if act.has_heartrate_data() {
         let h = &act.heartrate_stats;
         info_md.push_str(&format!(
@@ -610,6 +624,9 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
         ));
     }
 
+    // --
+    // TABLE: Altitude
+    // --
     if act.has_altitude_data() {
         let a = &act.altitude_stats;
         info_md.push_str(&format!(
@@ -621,6 +638,9 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
         ));
     }
 
+    // --
+    // TABLE: Temperature
+    // --
     if act.has_temperature_data() {
         let t = &act.temp_stats;
         info_md.push_str(&format!(
