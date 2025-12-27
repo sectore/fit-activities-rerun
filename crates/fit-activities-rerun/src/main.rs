@@ -508,7 +508,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
             format!("{id}/{data_id}/avg"),
             &SeriesLines::new()
                 .with_names(["avg"])
-                .with_colors([Color::from_unmultiplied_rgba(0x1B, 0x7E, 0xF7, 0x7F)])
+                .with_colors([Color::from(0x1B7EF77F)])
                 .with_widths([2.0]),
         )?;
 
@@ -517,7 +517,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
             format!("{id}/{data_id}/max"),
             &SeriesPoints::new()
                 .with_names(["max"])
-                .with_colors([Color::from_unmultiplied_rgba(0xE1, 0x1D, 0x48, 0x7F)])
+                .with_colors([Color::from(0xE11D487F)])
                 .with_markers([MarkerShape::Circle])
                 .with_marker_sizes([2.0]),
         )?;
@@ -527,7 +527,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
             format!("{id}/{data_id}/min"),
             &SeriesPoints::new()
                 .with_names(["min"])
-                .with_colors([Color::from_unmultiplied_rgba(0xFD, 0xE0, 0x47, 0x7F)])
+                .with_colors([Color::from(0xFDE0477F)])
                 .with_markers([MarkerShape::Circle])
                 .with_marker_sizes([2.0]),
         )?;
@@ -673,7 +673,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
             format!("{id}/route/all/start"),
             &rerun::GeoPoints::from_lat_lon([first])
                 .with_radii([rerun::Radius::new_ui_points(6.0)])
-                .with_colors([rerun::Color::from_unmultiplied_rgba(0xF7, 0x93, 0x11, 0xFF)]),
+                .with_colors([rerun::Color::from(0xF79311FF)]),
         )?;
 
         // All route
@@ -681,7 +681,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
             format!("{id}/route/all"),
             &rerun::GeoLineStrings::from_lat_lon([positions.clone()])
                 .with_radii([rerun::Radius::new_ui_points(2.0)])
-                .with_colors([rerun::Color::from_unmultiplied_rgba(0xF7, 0x93, 0x11, 0x7F)]),
+                .with_colors([rerun::Color::from(0xF793117F)]),
         )?;
 
         // Finish point
@@ -690,7 +690,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
                 format!("{id}/route/all/finish"),
                 &rerun::GeoPoints::from_lat_lon([last])
                     .with_radii([rerun::Radius::new_ui_points(6.0)])
-                    .with_colors([rerun::Color::from_unmultiplied_rgba(0xF7, 0x93, 0x11, 0x7F)]),
+                    .with_colors([rerun::Color::from(0xF793117F)]),
             )?;
         }
     }
@@ -712,7 +712,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
                 format!("{id}/route/current"),
                 &rerun::GeoLineStrings::from_lat_lon([route_positions.clone()])
                     .with_radii([rerun::Radius::new_ui_points(2.0)])
-                    .with_colors([rerun::Color::from_unmultiplied_rgba(0xF7, 0x93, 0x11, 0xFF)]),
+                    .with_colors([rerun::Color::from(0xF79311FF)]),
             )?;
 
             // Log point of current record
@@ -720,7 +720,7 @@ fn run(rec: &rerun::RecordingStream, act: &Activity) -> anyhow::Result<()> {
                 format!("{id}/route/current/location"),
                 &rerun::GeoPoints::from_lat_lon([pos])
                     .with_radii([rerun::Radius::new_ui_points(6.0)])
-                    .with_colors([rerun::Color::from_unmultiplied_rgba(0xF7, 0x93, 0x11, 0xFF)]),
+                    .with_colors([rerun::Color::from(0xF79311FF)]),
             )?;
         }
 
