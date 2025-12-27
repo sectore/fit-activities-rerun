@@ -465,6 +465,10 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
 }
 
 fn main() -> Result<()> {
+    // env
+    dotenvy::dotenv().ok();
+    let _mapbox_token = std::env::var("RERUN_MAPBOX_ACCESS_TOKEN").ok();
+
     let args = Args::parse();
 
     // Validate file extension
