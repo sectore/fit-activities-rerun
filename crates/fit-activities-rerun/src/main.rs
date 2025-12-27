@@ -260,7 +260,7 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
             MesgNum::Session => {
                 for field in record.into_vec() {
                     let field_name = field.name();
-                    println!("session field: {} {:?}", field_name, field.value());
+                    // println!("session field: {} {:?}", field_name, field.value());
 
                     match field_name {
                         "sport" => {
