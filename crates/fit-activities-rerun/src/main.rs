@@ -42,7 +42,13 @@ struct Args {
     #[clap(long, value_name = "FILE", required = true)]
     fit: PathBuf,
     /// Map tile style. To use styles other than 'osm', set the environment variable RERUN_MAPBOX_ACCESS_TOKEN to enable Mapbox instead.
-    #[clap(long, value_enum, default_value_t)]
+    // TODO: enable whenever we can use a custom `MapView` ...
+    // `blueprint` is needed for doing that, but it seems it's not supported in Rust (yet)
+    // see:
+    // Rust: Blueprint API parity with python https://github.com/rerun-io/rerun/issues/5521
+    // Simple non-public blueprint support for Rust https://github.com/rerun-io/rerun/issues/6110
+    // #[clap(long, value_enum, default_value_t)]
+    #[arg(skip, value_enum)]
     map: MapStyle,
 }
 
