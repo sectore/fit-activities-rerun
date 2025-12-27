@@ -8301,6 +8301,7 @@ dependencies = [
  "arrow",
  "camino",
  "cfg-if",
+ "clap",
  "crossbeam",
  "document-features",
  "indexmap",
