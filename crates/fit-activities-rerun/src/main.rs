@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Local};
 use clap::Parser;
 use fitparser::de::DecodeOption;
 use std::collections::HashSet;
@@ -23,7 +23,7 @@ struct Args {
 
 #[derive(Debug, Default)]
 struct TimeStats {
-    start: Option<DateTime<Utc>>,
+    start: Option<DateTime<Local>>,
     total: Option<Duration>,
     pause: Option<Duration>,
 }
@@ -139,7 +139,7 @@ impl Distance {
 
 #[derive(Debug, Default)]
 struct Record {
-    timestamp: DateTime<Utc>,
+    timestamp: DateTime<Local>,
     position_lat: Option<LatLong>,
     position_long: Option<LatLong>,
     distance: Option<Distance>,
@@ -260,12 +260,17 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
             MesgNum::Session => {
                 for field in record.into_vec() {
                     let field_name = field.name();
-                    // println!("session field: {} {:?}", field_name, field.value());
+                    println!("session field: {} {:?}", field_name, field.value());
 
                     match field_name {
                         "sport" => {
                             if let fitparser::Value::String(sport) = field.value() {
                                 activity.activity_type = Some(sport.clone());
+                            }
+                        }
+                        "start_time" => {
+                            if let fitparser::Value::Timestamp(v) = field.value() {
+                                activity.time_stats.start = Some(*v);
                             }
                         }
                         "total_elapsed_time" => {
@@ -303,8 +308,8 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
 
                     match field_name {
                         "timestamp" => {
-                            if let fitparser::Value::Timestamp(ts) = field.value() {
-                                rec.timestamp = ts.with_timezone(&Utc);
+                            if let fitparser::Value::Timestamp(v) = field.value() {
+                                rec.timestamp = *v;
                             }
                         }
                         "position_lat" => {
