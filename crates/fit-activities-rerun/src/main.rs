@@ -5,6 +5,7 @@ use fitparser::de::DecodeOption;
 use rerun::{
     GeoLineStrings, GeoPoints, MediaType, Radius, RecordingStream, Scalars, SeriesLines,
     SeriesPoints, TextDocument,
+    blueprint::*,
     components::{Color, MarkerShape},
     external::re_sdk_types::blueprint::components::MapProvider,
 };
@@ -42,14 +43,23 @@ struct Args {
     #[clap(long, value_name = "FILE", required = true)]
     fit: PathBuf,
     /// Map tile style. To use styles other than 'osm', set the environment variable RERUN_MAPBOX_ACCESS_TOKEN to enable Mapbox instead.
-    // TODO: enable whenever we can use a custom `MapView` ...
-    // `blueprint` is needed for doing that, but it seems it's not supported in Rust (yet)
-    // see:
-    // Rust: Blueprint API parity with python https://github.com/rerun-io/rerun/issues/5521
-    // Simple non-public blueprint support for Rust https://github.com/rerun-io/rerun/issues/6110
-    // #[clap(long, value_enum, default_value_t)]
-    #[arg(skip, value_enum)]
+    #[clap(long, value_enum, default_value_t)]
     map: MapStyle,
+    /// Blueprint layout to use
+    #[clap(long, value_enum, default_value_t)]
+    blueprint: BlueprintChoice,
+}
+
+#[derive(Debug, Clone, Copy, Default, ValueEnum)]
+#[value(rename_all = "lowercase")]
+enum BlueprintChoice {
+    /// No custom blueprint (auto-layout)
+    None,
+    /// Default horizontal layout (Map left, Info+Metrics right)
+    Default,
+    /// Vertical layout (Map top, Info+Metrics bottom)
+    #[default]
+    Vertical,
 }
 
 #[derive(Debug, Default)]
@@ -495,6 +505,68 @@ fn parse_fit_file(file_path: &PathBuf) -> Result<Activity> {
     Ok(activity)
 }
 
+fn blueprint_default(act: &Activity, map_provider: MapProvider) -> Blueprint {
+    let id = &act.id;
+    let data_ids = act.get_available_data_ids();
+    let time_series_contents: Vec<String> = data_ids
+        .iter()
+        .map(|data_id| format!("{id}/{data_id}"))
+        .collect();
+
+    let container = Horizontal::new(vec![
+        MapView::new("map")
+            .with_origin(format!("{id}/route"))
+            .with_map_provider(map_provider)
+            .into(),
+        Vertical::new(vec![
+            TimeSeriesView::new("metrics")
+                .with_origin("{id}")
+                .with_contents(time_series_contents)
+                .into(),
+            TextDocumentView::new("info")
+                .with_origin(format!("{id}/info"))
+                .into(),
+        ])
+        .into(),
+    ]);
+
+    Blueprint::new(container)
+}
+
+fn blueprint_vertical(act: &Activity, map_provider: MapProvider) -> Blueprint {
+    let id = &act.id;
+    let data_ids = act.get_available_data_ids();
+
+    // Build the horizontal row: info text + individual time series views
+    let mut info_and_metrics: Vec<ContainerLike> = vec![
+        TextDocumentView::new("info")
+            .with_origin(format!("{id}/info"))
+            .into(),
+    ];
+
+    for data_id in data_ids {
+        info_and_metrics.push(
+            TimeSeriesView::new(data_id.to_string())
+                .with_origin(format!("{id}/{data_id}"))
+                .into(),
+        );
+    }
+
+    let container = Vertical::new(vec![
+        MapView::new("map")
+            .with_origin(format!("{id}/route"))
+            .with_map_provider(map_provider)
+            .into(),
+        Horizontal::new(info_and_metrics).into(),
+    ])
+    .with_row_shares([3.0, 1.0]); // Map gets 75% height, info+metrics get 25%
+
+    Blueprint::new(container)
+        .with_blueprint_panel(BlueprintPanel::from_state("collapsed"))
+        .with_selection_panel(SelectionPanel::from_state("collapsed"))
+        .with_time_panel(TimePanel::new().with_state_str("collapsed"))
+}
+
 fn main() -> Result<()> {
     // env
     dotenvy::dotenv().ok();
@@ -526,11 +598,25 @@ fn main() -> Result<()> {
     // parse data
     let activity = parse_fit_file(&args.fit)?;
 
-    let (rec, _serve_guard) = args.rerun.init("fit_activities_rerun_rs")?;
-    run(&rec, &activity, &map_provider)
+    // Send blueprint based on CLI argument
+    let (rec, _) = match args.blueprint {
+        BlueprintChoice::Default => {
+            let blueprint = blueprint_default(&activity, map_provider);
+            args.rerun
+                .init_with_blueprint("fit_activities_rerun_rs", blueprint)?
+        }
+        BlueprintChoice::Vertical => {
+            let blueprint = blueprint_vertical(&activity, map_provider);
+            args.rerun
+                .init_with_blueprint("fit_activities_rerun_rs", blueprint)?
+        }
+        BlueprintChoice::None => args.rerun.init("fit_activities_rerun_rs")?,
+    };
+
+    run(&rec, &activity)
 }
 
-fn run(rec: &RecordingStream, act: &Activity, _map_provider: &MapProvider) -> anyhow::Result<()> {
+fn run(rec: &RecordingStream, act: &Activity) -> anyhow::Result<()> {
     let id = &act.id;
     let data_ids = act.get_available_data_ids();
 

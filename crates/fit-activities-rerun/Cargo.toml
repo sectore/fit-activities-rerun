@@ -17,7 +17,13 @@ exclude = [
 ]
 
 [dependencies]
-rerun = { version = "0.28.1", default-features = false, features = [
+# rerun = { version = "0.28.1", default-features = false, features = [
+#     "sdk",
+#     "map_view",
+#     "server",
+#     "clap"
+# ] }
+rerun = { git = "https://github.com/sectore/rerun", branch = "blueprint-rs", default-features = false, features = [
     "sdk",
     "map_view",
     "server",
