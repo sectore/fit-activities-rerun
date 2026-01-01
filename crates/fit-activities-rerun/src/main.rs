@@ -7,7 +7,7 @@ use rerun::{
     SeriesPoints, TextDocument,
     blueprint::*,
     components::{Color, MarkerShape},
-    external::re_sdk_types::blueprint::components::MapProvider,
+    external::re_sdk_types::blueprint::components::{MapProvider, PanelState},
 };
 use std::collections::HashSet;
 use std::fs;
@@ -562,9 +562,9 @@ fn blueprint_vertical(act: &Activity, map_provider: MapProvider) -> Blueprint {
     .with_row_shares([3.0, 1.0]); // Map gets 75% height, info+metrics get 25%
 
     Blueprint::new(container)
-        .with_blueprint_panel(BlueprintPanel::from_state("collapsed"))
-        .with_selection_panel(SelectionPanel::from_state("collapsed"))
-        .with_time_panel(TimePanel::new().with_state_str("collapsed"))
+        .with_blueprint_panel(Panel::from_state(PanelState::Collapsed))
+        .with_selection_panel(SelectionPanel::from_state(PanelState::Collapsed))
+        .with_time_panel(TimePanel::new().with_state(PanelState::Collapsed))
 }
 
 fn main() -> Result<()> {
