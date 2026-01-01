@@ -5,7 +5,10 @@ use fitparser::de::DecodeOption;
 use rerun::{
     GeoLineStrings, GeoPoints, MediaType, Radius, RecordingStream, Scalars, SeriesLines,
     SeriesPoints, TextDocument,
-    blueprint::*,
+    blueprint::{
+        Blueprint, BlueprintPanel, ContainerLike, Horizontal, MapView, SelectionPanel,
+        TextDocumentView, TimePanel, TimeSeriesView, Vertical,
+    },
     components::{Color, MarkerShape},
     external::re_sdk_types::blueprint::components::{MapProvider, PanelState},
 };
@@ -562,7 +565,7 @@ fn blueprint_vertical(act: &Activity, map_provider: MapProvider) -> Blueprint {
     .with_row_shares([3.0, 1.0]); // Map gets 75% height, info+metrics get 25%
 
     Blueprint::new(container)
-        .with_blueprint_panel(Panel::from_state(PanelState::Collapsed))
+        .with_blueprint_panel(BlueprintPanel::from_state(PanelState::Collapsed))
         .with_selection_panel(SelectionPanel::from_state(PanelState::Collapsed))
         .with_time_panel(TimePanel::new().with_state(PanelState::Collapsed))
 }
