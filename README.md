@@ -11,7 +11,7 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 - Free and open source
 
 <details>
-<summary># Table of Contents</summary>
+<summary>Table of Contents</summary>
 
 - [Preview](./#preview)
 - [Requirements](./#requirements)
@@ -42,8 +42,7 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 
 ## Without `Nix`
 
-<details>
-<summary>Python</summary>
+### Python
 
 - [Python](https://www.python.org) 3.13+
 - [uv](https://docs.astral.sh/uv/)
@@ -56,23 +55,22 @@ source .venv/bin/activate
 uv sync
 ```
 
-</details>
-
-<details>
-<summary>Rust</summary>
+### Rust
 
 - [Rust](https://rust-lang.org/)
 
-</details>
-
 # CLI
 
-<details>
-<summary>Python</summary>
+## Python
 
 ```sh
 fit-activities-rerun --help
+```
 
+<details>
+<summary>Output</summary>
+
+```sh
 usage: fit-activities-rerun [-h] --fit FIT [--blueprint {none,vertical}] [--map {osm,dark,light,streets,satellite}] [--headless] [--connect] [--serve] [--url URL] [--save SAVE] [--stdout]
 
 Visualize `*.fit` data using Rerun.
@@ -94,12 +92,16 @@ options:
 
 </details>
 
-<details>
-<summary>Rust</summary>
+## Rust
 
 ```sh
 cargo run -- --help
+```
 
+<details>
+<summary>Output</summary>
+
+```sh
 Usage: fit-activities-rerun [OPTIONS] --fit <FILE>
 
 Options:
