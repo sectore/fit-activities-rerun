@@ -3,8 +3,9 @@
 Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream it into [Rerun.io](https://rerun.io) for interactive visualization of fitness activities.
 
 **Features:**
+
 - Map views: [`OpenStreetMap`](https://www.openstreetmap.org) (default) or [`Mapbox`](https://www.mapbox.com) ([access token](https://docs.mapbox.com/help/glossary/access-token/) required)
-- Charts: `speed`, `heart rate`, `altitude`, `temperature` 
+- Charts: `speed`, `heart rate`, `altitude`, `temperature`
 - `Summary` info panel
 - Build in `Rust` or `Python`
 - Free and open source
@@ -48,11 +49,13 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 - [uv](https://docs.astral.sh/uv/)
 
 Setup:
+
 ```sh
 uv venv .venv
 source .venv/bin/activate
 uv sync
 ```
+
 </details>
 
 <details>
@@ -173,7 +176,7 @@ Options:
 
 ## Usage
 
-### Python 
+### Python
 
 ```sh
 fit-activities-rerun --fit <path-to-fit-file>
@@ -187,20 +190,20 @@ cargo run -- --fit <path-to-fit-file>
 
 ## Customize `MapView`
 
-To use a map tile style other than the default `osm` (OpenStreetMap), set a [Mapbox access token](https://docs.mapbox.com/help/dive-deeper/access-tokens/) as the environment variable `RERUN_MAPBOX_ACCESS_TOKEN`: 
+To use a map tile style other than the default `osm` (OpenStreetMap), set a [Mapbox access token](https://docs.mapbox.com/help/dive-deeper/access-tokens/) as the environment variable `RERUN_MAPBOX_ACCESS_TOKEN`:
 
 - A) In `.env`:
 
-   ```sh
-   RERUN_MAPBOX_ACCESS_TOKEN=your_token
-   ```
-   See [`.env.example`](./.env.example) for reference.
+  ```sh
+  RERUN_MAPBOX_ACCESS_TOKEN=your_token
+  ```
+  See [`.env.example`](./.env.example) for reference.
 
 - B) Or by exporting it directly:
 
-   ```sh
-   export RERUN_MAPBOX_ACCESS_TOKEN=your_token
-   ```
+  ```sh
+  export RERUN_MAPBOX_ACCESS_TOKEN=your_token
+  ```
 
 - C) Or by setting it in Rerun's `Settings` -> `Map view` -> `Mapbox access token`.
 
