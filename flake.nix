@@ -45,6 +45,7 @@
               # misc
               typos
               just
+              dprint
             ]
             ++ lib.optionals stdenv.isLinux [
               # GUI libs
