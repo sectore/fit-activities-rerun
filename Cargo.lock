@@ -145,7 +145,7 @@ dependencies = [
  "once_cell",
  "serde",
  "version_check",
- "zerocopy 0.8.31",
+ "zerocopy 0.8.32",
 ]
 
 [[package]]
@@ -682,7 +682,7 @@ checksum = "3b43422f69d8ff38f95f1b2bb76517c91589a924d1559a0e935d7c8ce0274c11"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -722,7 +722,7 @@ checksum = "c7c24de15d275a1ecfd47a380fb4d5ec9bfe0933f309ed5e705b775596a3574d"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -739,7 +739,7 @@ checksum = "9035ad2d096bed7955a320ee7e2230574d28fd3c3a0f186cbea1ff3c7eed5dbb"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -774,7 +774,7 @@ checksum = "49c98dba06b920588de7d63f6acc23f1e6a9fade5fd6198e564506334fb5a4f5"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -1134,7 +1134,7 @@ checksum = "f9abbd1bc6865053c427f7198e6af43bfdedc55ab791faed4fbd361d789575ff"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -1401,7 +1401,7 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -1476,7 +1476,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f76990911f2267d837d9d0ad060aa63aaad170af40904b29461734c339030d4d"
 dependencies = [
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -1813,7 +1813,7 @@ dependencies = [
  "ident_case",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -1824,7 +1824,7 @@ checksum = "d38308df82d1080de0afee5d069fa14b0326a88c14f15c5ccda35b4a6c414c81"
 dependencies = [
  "darling_core",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -2255,7 +2255,7 @@ checksum = "ec6f637bce95efac05cdfb9b6c19579ed4aa5f6b94d951cfa5bb054b7bb4f730"
 dependencies = [
  "datafusion-expr",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -2504,7 +2504,7 @@ checksum = "97369cbbc041bc366949bc74d34658d6cda5621039731c6310521892a3a20ae0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -2851,7 +2851,7 @@ checksum = "f282cfdfe92516eb26c2af8589c274c7c17681f5ecc03c18255fe741c6aa64eb"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -2872,7 +2872,7 @@ checksum = "67c78a4d8fdf9953a5c9d458f9efe940fd97a0cab0941c075a813ac594733827"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -2883,7 +2883,7 @@ checksum = "2f9ed6b3789237c8a0c1c505af1c7eb2c560df6186f01b098c3a1064ea532f38"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -2904,7 +2904,7 @@ dependencies = [
  "darling",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -3030,7 +3030,7 @@ checksum = "a0aca10fb742cb43f9e7bb8467c91aa9bcb8e3ffbc6a6f7389bb93ffc920577d"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -3170,7 +3170,7 @@ checksum = "1a5c6c585bc94aaf2c7b51dd4c2ba22680844aba4c687be581871a6f518c5742"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -3272,7 +3272,7 @@ checksum = "162ee34ebcb7c64a8abebc059ce0fee27c2262618d7b60ed8faf72fef13c3650"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -3382,9 +3382,9 @@ dependencies = [
 
 [[package]]
 name = "glam"
-version = "0.30.9"
+version = "0.30.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd47b05dddf0005d850e5644cae7f2b14ac3df487979dbfff3b56f20b1a6ae46"
+checksum = "19fc433e8437a212d1b6f1e68c7824af3aed907da60afa994e7f542d18d12aa9"
 dependencies = [
  "bytemuck",
  "serde_core",
@@ -3432,7 +3432,7 @@ dependencies = [
  "inflections",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -3606,7 +3606,7 @@ dependencies = [
  "cfg-if",
  "crunchy",
  "num-traits",
- "zerocopy 0.8.31",
+ "zerocopy 0.8.32",
 ]
 
 [[package]]
@@ -4179,7 +4179,7 @@ checksum = "e0c84ee7f197eca9a86c6fd6cb771e55eb991632f15f2bc3ca6ec838929e6e78"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -4662,7 +4662,7 @@ checksum = "49e7bc1560b95a3c4a25d03de42fe76ca718ab92d1a22a55b9b4cf67b3ae635c"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -4941,7 +4941,7 @@ checksum = "ed3955f1a9c7c0c15e092f9c887db08b1fc683305fdf6eb6684f22555355e202"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -5015,7 +5015,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -5726,7 +5726,7 @@ dependencies = [
  "phf_shared 0.11.3",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
  "unicase",
 ]
 
@@ -5772,7 +5772,7 @@ checksum = "6e918e4ff8c4549eb882f14b3a4bc8c8bc93de829416eacf579f1207a8fbf861"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -5909,7 +5909,7 @@ version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85eae3c4ed2f50dcfe72643da4befc30deadb458a9b590d720cde2f2b1e97da9"
 dependencies = [
- "zerocopy 0.8.31",
+ "zerocopy 0.8.32",
 ]
 
 [[package]]
@@ -5953,7 +5953,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "52717f9a02b6965224f95ca2a81e2e0c5c43baacd28ca057577988930b6c3d5b"
 dependencies = [
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -5976,7 +5976,7 @@ checksum = "9adf1691c04c0a5ff46ff8f262b58beb07b0dbb61f96f9f54f6cbd82106ed87f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -5999,7 +5999,7 @@ dependencies = [
  "itertools 0.14.0",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -6260,7 +6260,7 @@ dependencies = [
 [[package]]
 name = "re_analytics"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "crossbeam",
  "directories",
@@ -6280,7 +6280,7 @@ dependencies = [
 [[package]]
 name = "re_arrow_combinators"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "re_arrow_util",
@@ -6291,7 +6291,7 @@ dependencies = [
 [[package]]
 name = "re_arrow_ui"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "egui",
@@ -6306,7 +6306,7 @@ dependencies = [
 [[package]]
 name = "re_arrow_util"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "arrow",
@@ -6324,7 +6324,7 @@ dependencies = [
 [[package]]
 name = "re_auth"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "async-trait",
  "base64 0.22.1",
@@ -6357,7 +6357,7 @@ dependencies = [
 [[package]]
 name = "re_blueprint_tree"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "egui",
  "egui_tiles",
@@ -6378,7 +6378,7 @@ dependencies = [
 [[package]]
 name = "re_build_info"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "re_byte_size",
  "serde",
@@ -6387,7 +6387,7 @@ dependencies = [
 [[package]]
 name = "re_build_tools"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "cargo_metadata",
@@ -6401,7 +6401,7 @@ dependencies = [
 [[package]]
 name = "re_byte_size"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "glam",
@@ -6412,7 +6412,7 @@ dependencies = [
 [[package]]
 name = "re_capabilities"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "document-features",
  "egui",
@@ -6422,7 +6422,7 @@ dependencies = [
 [[package]]
 name = "re_case"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "convert_case",
 ]
@@ -6430,7 +6430,7 @@ dependencies = [
 [[package]]
 name = "re_chunk"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -6460,7 +6460,7 @@ dependencies = [
 [[package]]
 name = "re_chunk_store"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -6489,7 +6489,7 @@ dependencies = [
 [[package]]
 name = "re_chunk_store_ui"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "egui",
@@ -6509,7 +6509,7 @@ dependencies = [
 [[package]]
 name = "re_component_fallbacks"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "re_log_types",
  "re_sdk_types",
@@ -6519,7 +6519,7 @@ dependencies = [
 [[package]]
 name = "re_component_ui"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "egui",
@@ -6543,7 +6543,7 @@ dependencies = [
 [[package]]
 name = "re_context_menu"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "egui",
  "egui_tiles",
@@ -6565,7 +6565,7 @@ dependencies = [
 [[package]]
 name = "re_crash_handler"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "backtrace",
  "econtext",
@@ -6578,7 +6578,7 @@ dependencies = [
 [[package]]
 name = "re_data_loader"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -6616,7 +6616,7 @@ dependencies = [
 [[package]]
 name = "re_data_source"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "itertools 0.14.0",
@@ -6639,7 +6639,7 @@ dependencies = [
 [[package]]
 name = "re_data_ui"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -6674,7 +6674,7 @@ dependencies = [
 [[package]]
 name = "re_dataframe"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "arrow",
@@ -6696,7 +6696,7 @@ dependencies = [
 [[package]]
 name = "re_dataframe_ui"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "arrow",
@@ -6731,7 +6731,7 @@ dependencies = [
 [[package]]
 name = "re_datafusion"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "arrow",
@@ -6762,7 +6762,7 @@ dependencies = [
 [[package]]
 name = "re_entity_db"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "arrow",
@@ -6797,12 +6797,12 @@ dependencies = [
 [[package]]
 name = "re_error"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 
 [[package]]
 name = "re_format"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "half",
  "itertools 0.14.0",
@@ -6812,7 +6812,7 @@ dependencies = [
 [[package]]
 name = "re_grpc_client"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "async-stream",
  "crossbeam",
@@ -6837,7 +6837,7 @@ dependencies = [
 [[package]]
 name = "re_grpc_server"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "itertools 0.14.0",
@@ -6866,7 +6866,7 @@ dependencies = [
 [[package]]
 name = "re_int_histogram"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "smallvec",
  "static_assertions",
@@ -6875,7 +6875,7 @@ dependencies = [
 [[package]]
 name = "re_log"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "env_filter",
  "env_logger",
@@ -6890,7 +6890,7 @@ dependencies = [
 [[package]]
 name = "re_log_channel"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "async-channel",
@@ -6909,7 +6909,7 @@ dependencies = [
 [[package]]
 name = "re_log_encoding"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "bytes",
@@ -6943,7 +6943,7 @@ dependencies = [
 [[package]]
 name = "re_log_types"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "arrow",
@@ -6978,7 +6978,7 @@ dependencies = [
 [[package]]
 name = "re_mcap"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -7002,7 +7002,7 @@ dependencies = [
 [[package]]
 name = "re_memory"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "backtrace",
@@ -7038,7 +7038,7 @@ dependencies = [
 [[package]]
 name = "re_perf_telemetry"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -7068,7 +7068,7 @@ dependencies = [
 [[package]]
 name = "re_protos"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "http",
@@ -7096,7 +7096,7 @@ dependencies = [
 [[package]]
 name = "re_query"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -7146,7 +7146,7 @@ dependencies = [
 [[package]]
 name = "re_recording_panel"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "egui",
@@ -7167,7 +7167,7 @@ dependencies = [
 [[package]]
 name = "re_redap_browser"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "datafusion",
@@ -7199,7 +7199,7 @@ dependencies = [
 [[package]]
 name = "re_redap_client"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "arrow",
@@ -7230,7 +7230,7 @@ dependencies = [
 [[package]]
 name = "re_renderer"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -7280,7 +7280,7 @@ dependencies = [
 [[package]]
 name = "re_ros_msg"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "serde",
@@ -7290,7 +7290,7 @@ dependencies = [
 [[package]]
 name = "re_rvl"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "byteorder",
  "thiserror 2.0.17",
@@ -7299,7 +7299,7 @@ dependencies = [
 [[package]]
 name = "re_sdk"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "arrow",
@@ -7335,7 +7335,7 @@ dependencies = [
 [[package]]
 name = "re_sdk_types"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "array-init",
@@ -7375,7 +7375,7 @@ dependencies = [
 [[package]]
 name = "re_selection_panel"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "egui",
@@ -7406,7 +7406,7 @@ dependencies = [
 [[package]]
 name = "re_sorbet"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "itertools 0.14.0",
@@ -7426,7 +7426,7 @@ dependencies = [
 [[package]]
 name = "re_span"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "num-traits",
 ]
@@ -7434,7 +7434,7 @@ dependencies = [
 [[package]]
 name = "re_string_interner"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "nohash-hasher",
@@ -7446,7 +7446,7 @@ dependencies = [
 [[package]]
 name = "re_tf"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "arrow",
@@ -7469,7 +7469,7 @@ dependencies = [
 [[package]]
 name = "re_time_panel"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "egui",
  "itertools 0.14.0",
@@ -7495,7 +7495,7 @@ dependencies = [
 [[package]]
 name = "re_tracing"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "puffin",
  "puffin_http",
@@ -7507,7 +7507,7 @@ dependencies = [
 [[package]]
 name = "re_tuid"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "bytemuck",
  "document-features",
@@ -7520,7 +7520,7 @@ dependencies = [
 [[package]]
 name = "re_types_core"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "arrow",
@@ -7544,7 +7544,7 @@ dependencies = [
 [[package]]
 name = "re_ui"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -7580,7 +7580,7 @@ dependencies = [
 [[package]]
 name = "re_uri"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "re_log_types",
  "re_tuid",
@@ -7592,7 +7592,7 @@ dependencies = [
 [[package]]
 name = "re_video"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "bit-vec",
@@ -7627,7 +7627,7 @@ dependencies = [
 [[package]]
 name = "re_view"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "egui",
@@ -7651,7 +7651,7 @@ dependencies = [
 [[package]]
 name = "re_view_bar_chart"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "arrow",
  "egui",
@@ -7670,7 +7670,7 @@ dependencies = [
 [[package]]
 name = "re_view_dataframe"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "arrow",
@@ -7696,7 +7696,7 @@ dependencies = [
 [[package]]
 name = "re_view_graph"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "egui",
@@ -7721,7 +7721,7 @@ dependencies = [
 [[package]]
 name = "re_view_map"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "bytemuck",
  "egui",
@@ -7746,7 +7746,7 @@ dependencies = [
 [[package]]
 name = "re_view_spatial"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -7791,7 +7791,7 @@ dependencies = [
 [[package]]
 name = "re_view_tensor"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -7816,7 +7816,7 @@ dependencies = [
 [[package]]
 name = "re_view_text_document"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "egui",
  "egui_commonmark",
@@ -7831,7 +7831,7 @@ dependencies = [
 [[package]]
 name = "re_view_text_log"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "egui",
  "egui_extras",
@@ -7853,7 +7853,7 @@ dependencies = [
 [[package]]
 name = "re_view_time_series"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "egui",
  "egui_plot",
@@ -7878,7 +7878,7 @@ dependencies = [
 [[package]]
 name = "re_viewer"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -7966,7 +7966,7 @@ dependencies = [
 [[package]]
 name = "re_viewer_context"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -8037,7 +8037,7 @@ dependencies = [
 [[package]]
 name = "re_viewport"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "egui",
@@ -8063,7 +8063,7 @@ dependencies = [
 [[package]]
 name = "re_viewport_blueprint"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "arrow",
@@ -8230,7 +8230,7 @@ dependencies = [
 [[package]]
 name = "rerun"
 version = "0.29.0-alpha.1+dev"
-source = "git+https://github.com/sectore/rerun?branch=blueprint-rs#9146b3c37c72b92a487fb6006d1cd98374ce145f"
+source = "git+https://github.com/rerun-io/rerun?rev=8d22635831ba04c2c687edd4594b730edc6f73d2#8d22635831ba04c2c687edd4594b730edc6f73d2"
 dependencies = [
  "ahash",
  "anyhow",
@@ -8647,14 +8647,14 @@ checksum = "d540f220d3187173da220f885ab66608367b6574e925011a9353e4badda91d79"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
 name = "serde_json"
-version = "1.0.148"
+version = "1.0.149"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3084b546a1dd6289475996f182a22aba973866ea8e8b02c51d9f46b1336a22da"
+checksum = "83fc039473c5595ace860d8c4fafa220ff474b3fc6bfdb4293327f1a37e94d86"
 dependencies = [
  "itoa",
  "memchr",
@@ -8682,7 +8682,7 @@ checksum = "175ee3e80ae9982737ca543e96133087cbd9a485eecc3bc4de9c1a37b47ea59c"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -8948,7 +8948,7 @@ checksum = "da5fc6819faabb412da764b99d3b713bb55083c11e7e0c00144d386cd6a1939c"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -9024,7 +9024,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -9062,9 +9062,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.113"
+version = "2.0.114"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "678faa00651c9eb72dd2020cbdf275d92eccb2400d568e419efdd64838145cb4"
+checksum = "d4d107df263a3013ef9b1879b0df87d706ff80f65a86ea879bd9c31f9b307c2a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -9088,7 +9088,7 @@ checksum = "728a70f3dbaf5bab7f0c4b1ac8d7ae5ea60a4b5549c8a5914361c99147a709d2"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -9159,7 +9159,7 @@ checksum = "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -9170,7 +9170,7 @@ checksum = "3ff15c8ecd7de3849db632e14d18d2571fa09dfc5ed93479bc4485c7a517c913"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -9360,7 +9360,7 @@ checksum = "af407857209536a95c8e56f8231ef2c2e2aff839b22e07a1ffcbc617e9db9fa5"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -9584,7 +9584,7 @@ checksum = "7490cfa5ec963746568740651ac6781f701c9c5ea257c58e057f3ba8cf69e8da"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -9704,9 +9704,9 @@ dependencies = [
 
 [[package]]
 name = "unicase"
-version = "2.8.1"
+version = "2.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75b844d17643ee918803943289730bec8aac480150456169e647ed0b576ba539"
+checksum = "dbc4bc3a9f746d862c45cb89d705aa10f187bb96c76001afab07a0d35ce60142"
 
 [[package]]
 name = "unicode-ident"
@@ -9951,7 +9951,7 @@ dependencies = [
  "log",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
  "wasm-bindgen-shared",
 ]
 
@@ -9986,7 +9986,7 @@ checksum = "8ae87ea40c9f689fc23f209965b6fb8a99ad69aeeb0231408be24920604395de"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -10541,7 +10541,7 @@ checksum = "2bbd5b46c938e506ecbce286b6628a02171d56153ba733b6c741fc627ec9579b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -10552,7 +10552,7 @@ checksum = "053e2e040ab57b9dc951b72c264860db7eb3b0200ba345b4e4c3b14f67855ddf"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -10563,7 +10563,7 @@ checksum = "053c4c462dc91d3b1504c6fe5a726dd15e216ba718e84a0e46a88fbe5ded3515"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -10574,7 +10574,7 @@ checksum = "3f316c4a2570ba26bbec722032c4099d8c8bc095efccdc15688708623367e358"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -11079,7 +11079,7 @@ checksum = "b659052874eb698efe5b9e8cf382204678a0086ebf46982b79d6ca3182927e5d"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
  "synstructure",
 ]
 
@@ -11135,7 +11135,7 @@ checksum = "10da05367f3a7b7553c8cdf8fa91aee6b64afebe32b51c95177957efc47ca3a0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
  "zbus-lockstep",
  "zbus_xml",
  "zvariant",
@@ -11150,7 +11150,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
  "zbus_names",
  "zvariant",
  "zvariant_utils",
@@ -11193,11 +11193,11 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.31"
+version = "0.8.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd74ec98b9250adb3ca554bdde269adf631549f51d8a8f8f0a10b50f1cb298c3"
+checksum = "1fabae64378cb18147bb18bca364e63bdbe72a0ffe4adf0addfec8aa166b2c56"
 dependencies = [
- "zerocopy-derive 0.8.31",
+ "zerocopy-derive 0.8.32",
 ]
 
 [[package]]
@@ -11208,18 +11208,18 @@ checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.31"
+version = "0.8.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8a8d209fdf45cf5138cbb5a506f6b52522a25afccc534d1475dad8e31105c6a"
+checksum = "c9c2d862265a8bb4471d87e033e730f536e2a285cc7cb05dbce09a2a97075f90"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -11239,7 +11239,7 @@ checksum = "d71e5d6e06ab090c67b5e44993ec16b72dcbaabc526db883a360057678b48502"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
  "synstructure",
 ]
 
@@ -11279,7 +11279,7 @@ checksum = "eadce39539ca5cb3985590102671f2567e659fca9666581ad3411d59207951f3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
 ]
 
 [[package]]
@@ -11370,7 +11370,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.113",
+ "syn 2.0.114",
  "zvariant_utils",
 ]
 
@@ -11383,6 +11383,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.113",
+ "syn 2.0.114",
  "winnow",
 ]

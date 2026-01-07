@@ -23,7 +23,8 @@ exclude = [
 #     "server",
 #     "clap"
 # ] }
-rerun = { git = "https://github.com/sectore/rerun", branch = "blueprint-rs", default-features = false, features = [
+# point to #12307 (merged) - will be part of a next Rerun version
+rerun = { git = "https://github.com/rerun-io/rerun", rev = "8d22635831ba04c2c687edd4594b730edc6f73d2", default-features = false, features = [
     "sdk",
     "map_view",
     "server",
