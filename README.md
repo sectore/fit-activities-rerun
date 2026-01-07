@@ -6,14 +6,18 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 - Map views: [`OpenStreetMap`](https://www.openstreetmap.org) (default) or [`Mapbox`](https://www.mapbox.com) ([access token](https://docs.mapbox.com/help/glossary/access-token/) required)
 - Charts: `speed`, `heart rate`, `altitude`, `temperature` 
 - `Summary` info panel
+- Build in `Rust` or `Python`
 - Free and open source
 
-# Table of Contents
+<details>
+<summary># Table of Contents</summary>
 
 - [Preview](./#preview)
 - [Requirements](./#requirements)
 - [CLI](./#cli)
 - [License](./#license)
+
+</details>
 
 # Preview
 
@@ -33,9 +37,12 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 
 ## With `Nix` (recommended)
 
-`cd` into root directory. If you have `direnv` installed, run `direnv allow` once to install dependencies. Otherwise run `nix develop`. This will set up `Python`, `uv`, and all system dependencies you need.
+`cd` into root directory. If you have `direnv` installed, run `direnv allow` once to install dependencies. Otherwise run `nix develop`. This will set up `Rust`, `Python`, `uv` and all system dependencies you need.
 
 ## Without `Nix`
+
+<details>
+<summary>Python</summary>
 
 - [Python](https://www.python.org) 3.13+
 - [uv](https://docs.astral.sh/uv/)
@@ -46,8 +53,19 @@ uv venv .venv
 source .venv/bin/activate
 uv sync
 ```
+</details>
+
+<details>
+<summary>Rust</summary>
+
+- [Rust](https://rust-lang.org/)
+
+</details>
 
 # CLI
+
+<details>
+<summary>Python</summary>
 
 ```sh
 fit-activities-rerun --help
@@ -71,18 +89,101 @@ options:
   --stdout              Log data to standard output, to be piped into a Rerun Viewer
 ```
 
+</details>
+
+<details>
+<summary>Rust</summary>
+
+```sh
+cargo run -- --help
+
+Usage: fit-activities-rerun [OPTIONS] --fit <FILE>
+
+Options:
+      --spawn
+          Start a new Rerun Viewer process and feed it data in real-time
+
+      --save <SAVE>
+          Saves the data to an rrd file rather than visualizing it immediately
+
+  -o, --stdout
+          Log data to standard output, to be piped into a Rerun Viewer
+
+      --connect [<CONNECT>]
+          Connects and sends the logged data to a remote Rerun viewer.
+
+          Optionally takes a URL to connect to.
+
+          The scheme must be one of `rerun://`, `rerun+http://`, or `rerun+https://`, and the pathname must be `/proxy`.
+
+          The default is `rerun+http://127.0.0.1:9876/proxy`.
+
+      --server-memory-limit <SERVER_MEMORY_LIMIT>
+          An upper limit on how much memory the gRPC server should use.
+
+          The server buffers log messages for the benefit of late-arriving viewers.
+
+          When this limit is reached, Rerun will drop the oldest data. Example: `16GB` or `50%` (of system total).
+
+          Defaults to `25%`.
+
+          [default: 25%]
+
+      --newest-first
+          If true, play back the most recent data first when new clients connect
+
+      --bind <BIND>
+          What bind address IP to use
+
+          [default: 0.0.0.0]
+
+      --fit <FILE>
+          Path to the .fit file
+
+      --map <MAP>
+          Map tile style. To use styles other than 'osm', set the environment variable RERUN_MAPBOX_ACCESS_TOKEN to enable Mapbox instead
+
+          Possible values:
+          - osm:       OpenStreetMap
+          - dark:      Dark style (Mapbox)
+          - light:     Light style (Mapbox)
+          - streets:   Streets style (Mapbox)
+          - satellite: Satellite style (Mapbox)
+
+          [default: osm]
+
+      --blueprint <BLUEPRINT>
+          Blueprint layout to use
+
+          Possible values:
+          - none:     No custom blueprint (auto-layout)
+          - default:  Default horizontal layout (Map left, Info+Metrics right)
+          - vertical: Vertical layout (Map top, Info+Metrics bottom)
+
+          [default: vertical]
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
+```
+
+</details>
+
 ## Usage
+
+### Python 
 
 ```sh
 fit-activities-rerun --fit <path-to-fit-file>
 ```
 
-### Example
+### Rust
 
 ```sh
-fit-activities-rerun --fit ./data/fitdecode/Edge810-Vector-2013-08-16-15-35-10.fit
+cargo run -- --fit <path-to-fit-file>
 ```
-
 
 ## Customize `MapView`
 
@@ -99,7 +200,6 @@ To use a map tile style other than the default `osm` (OpenStreetMap), set a [Map
 
    ```sh
    export RERUN_MAPBOX_ACCESS_TOKEN=your_token
-   fit-activities-rerun --fit activity.fit
    ```
 
 - C) Or by setting it in Rerun's `Settings` -> `Map view` -> `Mapbox access token`.
