@@ -43,12 +43,14 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 
 ## Without `Nix`
 
+You can use either `Python` or `Rust` to run `fit-activities-rerun`:
+
 ### Python
 
 - [Python](https://www.python.org) 3.13+
 - [uv](https://docs.astral.sh/uv/)
 
-Setup:
+Setup ` uv`
 
 ```sh
 uv venv .venv
