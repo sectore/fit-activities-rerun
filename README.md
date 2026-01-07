@@ -13,10 +13,11 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 <details>
 <summary>Table of Contents</summary>
 
-- [Preview](./#preview)
-- [Requirements](./#requirements)
-- [CLI](./#cli)
-- [License](./#license)
+- [Preview](#preview)
+- [Requirements](#requirements)
+- [Usage](#usage)
+- [CLI](#cli)
+- [License](#license)
 
 </details>
 
@@ -58,6 +59,20 @@ uv sync
 ### Rust
 
 - [Rust](https://rust-lang.org/)
+
+# Usage
+
+### Python
+
+```sh
+fit-activities-rerun --fit <path-to-fit-file>
+```
+
+### Rust
+
+```sh
+cargo run -- --fit <path-to-fit-file>
+```
 
 # CLI
 
@@ -175,20 +190,6 @@ Options:
 ```
 
 </details>
-
-## Usage
-
-### Python
-
-```sh
-fit-activities-rerun --fit <path-to-fit-file>
-```
-
-### Rust
-
-```sh
-cargo run -- --fit <path-to-fit-file>
-```
 
 ## Customize `MapView`
 
