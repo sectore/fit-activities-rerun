@@ -50,7 +50,7 @@ You can use either `Python` or `Rust` to run `fit-activities-rerun`:
 - [Python](https://www.python.org) 3.13+
 - [uv](https://docs.astral.sh/uv/)
 
-Setup ` uv`
+Setup `uv`:
 
 ```sh
 uv venv .venv
@@ -61,6 +61,24 @@ uv sync
 ### Rust
 
 - [Rust](https://rust-lang.org/)
+
+### Rerun
+
+Rerun viewer is needed to run `fit-activities-rerun`.
+
+By following instructions above to setup Python and `uv`, the `rerun-sdk` package is already installed. It provides a CLI to the needed Rerun viewer.
+
+You might want to double check it. On Linux as follow:
+```sh
+which rerun
+{path-to}/fit-activities-rerun/.venv/bin/rerun
+```
+
+To update `rerun-sdk` package to another version, open `pyproject.toml` and change the version constraint for `rerun-sdk`. Run `uv sync` again. 
+
+If you don't use Python, you can install the Rust [`rerun` crate](https://crates.io/crates/rerun) to get a CLI to the Rerun viewer.
+
+Note: You never run Rerun's CLI by yourself, all is done "behind the scenes" by running `fit-activities-rerun` command only (see next chapter "Usage").
 
 # Usage
 
