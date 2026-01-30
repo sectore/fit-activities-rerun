@@ -228,10 +228,10 @@ def parse_fit_file(file_path: Path) -> Activity:
             if isinstance(frame, fitdecode.FitDataMessage):
                 # Get data from `session` frame
                 if frame.name == "session":
-                    print("Session fields:")
+                    # print("Session fields:")
                     for field in frame.fields:
                         value = frame.get_value(field.name, fallback=None)
-                        print(f"  {field.name}: {value} ({type(value).__name__})")
+                        # print(f"  {field.name}: {value} ({type(value).__name__})")
 
                     if isinstance(
                         value := frame.get_value("sport", fallback=None), str
