@@ -3,7 +3,7 @@ name = "fit-activities-rerun"
 version = "0.1.0"
 edition = "2024"
 # Reminder: Always keep `channel` in `rust-toolchain.toml` in sync with `rust-version`.
-rust-version = "1.92.0"
+rust-version = "1.93.0"
 authors = ["Jens Krause <jkrause.io>"]
 description = "Visualize `FIT` activity data in Rerun.io"
 license = "MIT"
@@ -17,14 +17,7 @@ exclude = [
 ]
 
 [dependencies]
-# rerun = { version = "0.28.1", default-features = false, features = [
-#     "sdk",
-#     "map_view",
-#     "server",
-#     "clap"
-# ] }
-# point to #12307 (merged) - will be part of a next Rerun version
-rerun = { git = "https://github.com/rerun-io/rerun", rev = "8d22635831ba04c2c687edd4594b730edc6f73d2", default-features = false, features = [
+rerun = { version = "0.29.0", default-features = false, features = [
     "sdk",
     "map_view",
     "server",

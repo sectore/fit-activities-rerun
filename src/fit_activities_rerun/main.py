@@ -782,7 +782,7 @@ def main():
     else:
         blueprint = blueprint_default(activity, map_provider)
 
-    rr.script_setup(args, "fit_activities_rerun")
+    rr.script_setup(args, "fit_activities_rerun_py")
     rr.send_blueprint(blueprint)
 
     log_data(activity)

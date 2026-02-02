@@ -5,7 +5,7 @@ description = "Load FIT file data and log it to Rerun.io"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "rerun-sdk>=0.28.0",
+    "rerun-sdk==0.29.0",
     "fitdecode",
     "python-dotenv>=1.2.1",
 ]
