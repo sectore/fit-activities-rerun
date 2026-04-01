@@ -82,13 +82,40 @@ Note: You never run Rerun's CLI by yourself, all is done "behind the scenes" by 
 
 # Usage
 
-### Python
+A [`justfile`](./justfile) is provided for common tasks. Run `just` to list all available commands.
+
+```sh
+just
+Available recipes:
+    default    # List available commands
+
+    [build]
+    build      # Build Rust and Python packages
+    build-py   # Build Python package
+    build-rs   # Build Rust binary
+
+    [format]
+    fmt        # Format Rust and Python sources
+    fmt-py     # Format Python sources
+    fmt-rs     # Format Rust sources
+
+    [lint]
+    lint       # Lint Rust and Python sources
+    lint-py    # Lint Python sources
+    lint-rs    # Lint Rust sources
+
+    [run]
+    run-py fit # Run the Python app.  Example: just run-py path/to/activity.fit
+    run-rs fit # Run the Rust app.  Example: just run-rs path/to/activity.fit
+```
+
+### Python (manual)
 
 ```sh
 fit-activities-rerun --fit <path-to-fit-file>
 ```
 
-### Rust
+### Rust (manual)
 
 ```sh
 cargo run -- --fit <path-to-fit-file>
@@ -106,7 +133,9 @@ fit-activities-rerun --help
 <summary>Output</summary>
 
 ```sh
-usage: fit-activities-rerun [-h] --fit FIT [--blueprint {none,vertical}] [--map {osm,dark,light,streets,satellite}] [--headless] [--connect] [--serve] [--url URL] [--save SAVE] [--stdout]
+usage: fit-activities-rerun [-h] --fit FIT [--blueprint {none,vertical}]
+                            [--map {osm,dark,light,streets,satellite}] [--headless] [--connect]
+                            [--serve] [--url URL] [--save SAVE] [--stdout]
 
 Visualize `*.fit` data using Rerun.
 
@@ -116,10 +145,11 @@ options:
   --blueprint {none,vertical}
                         Blueprint to use. (default: vertical)
   --map {osm,dark,light,streets,satellite}
-                        Map tile style. To use styles other than 'osm', set the environment variable RERUN_MAPBOX_ACCESS_TOKEN. (default: osm)
+                        Map tile style. To use styles other than 'osm', set the environment
+                        variable RERUN_MAPBOX_ACCESS_TOKEN. (default: osm)
   --headless            Don't show GUI
   --connect             Connect to an external viewer
-  --serve               Serve a web viewer (WARNING: experimental feature)
+  --serve               Host a GRPC & web server and open a web viewer connecting to it.
   --url URL             Connect to this Rerun URL
   --save SAVE           Save data to a .rrd file at this path
   --stdout              Log data to standard output, to be piped into a Rerun Viewer
