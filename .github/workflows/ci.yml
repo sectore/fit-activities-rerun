@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  rust:
+    name: Rust
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: fmt
+        run: nix develop --command cargo fmt --check
+
+      - name: clippy
+        run: nix develop --command cargo clippy -- -D warnings
+
+      - name: build
+        run: nix develop --command cargo build
+
+  python:
+    name: Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: fmt
+        run: nix develop --command uvx ruff format --check src/
+
+      - name: lint
+        run: nix develop --command uvx ruff check src/
+
+      - name: build
+        run: nix develop --command uv build
