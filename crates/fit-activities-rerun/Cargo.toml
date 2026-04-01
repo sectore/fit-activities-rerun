@@ -23,7 +23,7 @@ rerun = { version = "0.31.1", default-features = false, features = [
     "server",
     "clap"
 ] }
-clap = { version = "4.5", features = ["derive"] }
+clap = { version = "4.6", features = ["derive"] }
 anyhow = "1.0"
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
 fitparser = "0.10.0"
