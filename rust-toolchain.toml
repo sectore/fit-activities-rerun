@@ -1,4 +1,4 @@
 [toolchain]
 # Reminder: Always keep `rust-version` in `crates/fit-activities-rerun/Cargo.toml` in sync with `channel`.
-channel = "1.94.1"
+channel = "1.96.0"
 components = ["rustfmt", "clippy", "rust-src", "rust-analyzer"]

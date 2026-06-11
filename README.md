@@ -17,6 +17,7 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 - [Requirements](#requirements)
 - [Usage](#usage)
 - [CLI](#cli)
+- [How to](#how-to)
 - [License](#license)
 
 </details>
@@ -241,7 +242,10 @@ Options:
 
 </details>
 
-## Customize `MapView`
+
+## How to
+
+### Customize `MapView`
 
 To use a map tile style other than the default `osm` (OpenStreetMap), set a [Mapbox access token](https://docs.mapbox.com/help/dive-deeper/access-tokens/) as the environment variable `RERUN_MAPBOX_ACCESS_TOKEN`:
 
@@ -259,6 +263,34 @@ To use a map tile style other than the default `osm` (OpenStreetMap), set a [Map
   ```
 
 - C) Or by setting it in Rerun's `Settings` -> `Map view` -> `Mapbox access token`.
+
+### Graphics: `khronos-egl` panics on Linux
+
+#### Error 
+
+```sh
+thread 'main' panicked at 'called `Option::unwrap()` on a `None` value'
+khronos-egl-6.0.0/src/lib.rs:1779
+stack backtrace:
+   6: core::panicking::panic_fmt
+   7: core::panicking::panic
+   8: core::option::unwrap_failed
+   9: <wgpu_hal::gles::egl::Instance as wgpu_hal::Instance>::init
+  10: wgpu_core::instance::Instance::new
+  11: wgpu_core::global::Global::new
+  12: wgpu::api::instance::Instance::new
+  13: <eframe::native::wgpu_integration::WgpuWinitApp as eframe::native::winit_integration::WinitApp>::resumed
+  14: <eframe::native::run::WinitAppWrapper<T> as winit::application::ApplicationHandler<eframe::native::winit_integration::UserEvent>>::resumed
+  15: eframe::native::run::run_wgpu
+```
+
+#### Fix
+
+Force `vulkan` backend. In `.env`:
+
+```sh
+WGPU_BACKEND=vulkan
+```
 
 # License
 
