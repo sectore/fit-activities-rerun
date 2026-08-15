@@ -13,6 +13,12 @@ dependencies = [
 [project.scripts]
 fit-activities-rerun = "fit_activities_rerun.main:main"
 
+[dependency-groups]
+dev = ["ruff", "basedpyright"]
+
+[tool.basedpyright]
+typeCheckingMode = "basic"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
