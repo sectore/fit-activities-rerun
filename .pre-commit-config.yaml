@@ -1,0 +1,44 @@
+repos:
+  - repo: local
+    hooks:
+      - id: fmt-check-rs
+        name: cargo fmt --check
+        entry: just fmt-check-rs
+        language: system
+        files: \.rs$
+        pass_filenames: false
+
+      - id: lint-rs
+        name: cargo clippy
+        entry: just lint-rs
+        language: system
+        files: \.rs$
+        pass_filenames: false
+
+      - id: fmt-check-py
+        name: ruff format --check
+        entry: just fmt-check-py
+        language: system
+        files: \.py$
+        pass_filenames: false
+
+      - id: lint-py
+        name: ruff check
+        entry: just lint-py
+        language: system
+        files: \.py$
+        pass_filenames: false
+
+      - id: typecheck-py
+        name: basedpyright
+        entry: just typecheck-py
+        language: system
+        files: \.py$
+        pass_filenames: false
+
+      - id: fmt-check-md
+        name: dprint check
+        entry: just fmt-check-md
+        language: system
+        files: \.md$
+        pass_filenames: false

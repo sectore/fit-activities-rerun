@@ -15,6 +15,7 @@ Load [`*.fit` file](https://developer.garmin.com/fit/overview/) data and stream 
 
 - [Preview](#preview)
 - [Requirements](#requirements)
+- [Git hooks](#git-hooks)
 - [Usage](#usage)
 - [CLI](#cli)
 - [How to](#how-to)
@@ -65,15 +66,23 @@ uv sync
 
 ### dprint
 
-Only needed to format/check Markdown files.
+Needed to format/check Markdown files.
 
 - [dprint](https://dprint.dev/)
 
-### Rerun
+## Git hooks (optional)
 
-Rerun viewer is needed to run `fit-activities-rerun`.
+[`pre-commit`](https://pre-commit.com) hooks mirror the `justfile` checks (per-language, see [`.pre-commit-config.yaml`](./.pre-commit-config.yaml)):
 
-By following instructions above to setup Python and `uv`, the `rerun-sdk` package is already installed. It provides a CLI to the needed Rerun viewer.
+- `Nix` users: auto-installed via `shellHook`
+- Non-`Nix` users: `uv run --only-group dev pre-commit install` (only once)
+
+## Rerun
+
+Rerun viewer is needed to run `fit-activities-rerun`. It comes from the `rerun-sdk` Python package, which provides a CLI to the Rerun viewer.
+
+- `Nix` users: already installed automatically via `shellHook` (`uv sync`).
+- Non-`Nix` users: already installed if you followed the `Python` setup steps above (`uv sync`).
 
 You might want to double check it. On Linux as follow:
 

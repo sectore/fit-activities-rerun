@@ -78,6 +78,8 @@
             source .venv/bin/activate
             uv sync
 
+            # Install git hooks (no-op outside a git checkout)
+            git rev-parse --git-dir >/dev/null 2>&1 && pre-commit install
           '';
         };
       });
