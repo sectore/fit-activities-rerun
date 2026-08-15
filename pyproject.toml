@@ -5,13 +5,19 @@ description = "Load FIT file data and log it to Rerun.io"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "rerun-sdk==0.33.0",
+    "rerun-sdk==0.36.0",
     "fitdecode",
     "python-dotenv>=1.2.1",
 ]
 
 [project.scripts]
 fit-activities-rerun = "fit_activities_rerun.main:main"
+
+[dependency-groups]
+dev = ["ruff", "basedpyright"]
+
+[tool.basedpyright]
+typeCheckingMode = "basic"
 
 [build-system]
 requires = ["hatchling"]

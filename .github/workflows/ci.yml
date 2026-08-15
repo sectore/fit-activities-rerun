@@ -17,13 +17,13 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: fmt
-        run: nix develop --command cargo fmt --check
+        run: nix develop --command just fmt-check-rs
 
       - name: clippy
-        run: nix develop --command cargo clippy -- -D warnings
+        run: nix develop --command just lint-rs
 
       - name: build
-        run: nix develop --command cargo build
+        run: nix develop --command just build-rs
 
   python:
     name: Python
@@ -36,10 +36,13 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: fmt
-        run: nix develop --command uvx ruff format --check src/
+        run: nix develop --command just fmt-check-py
 
       - name: lint
-        run: nix develop --command uvx ruff check src/
+        run: nix develop --command just lint-py
+
+      - name: typecheck-py
+        run: nix develop --command just typecheck-py
 
       - name: build
-        run: nix develop --command uv build
+        run: nix develop --command just build-py

@@ -63,6 +63,12 @@ uv sync
 
 - [Rust](https://rust-lang.org/)
 
+### dprint
+
+Only needed to format/check Markdown files.
+
+- [dprint](https://dprint.dev/)
+
 ### Rerun
 
 Rerun viewer is needed to run `fit-activities-rerun`.
@@ -70,12 +76,13 @@ Rerun viewer is needed to run `fit-activities-rerun`.
 By following instructions above to setup Python and `uv`, the `rerun-sdk` package is already installed. It provides a CLI to the needed Rerun viewer.
 
 You might want to double check it. On Linux as follow:
+
 ```sh
 which rerun
 {path-to}/fit-activities-rerun/.venv/bin/rerun
 ```
 
-To update `rerun-sdk` package to another version, open `pyproject.toml` and change the version constraint for `rerun-sdk`. Run `uv sync` again. 
+To update `rerun-sdk` package to another version, open `pyproject.toml` and change the version constraint for `rerun-sdk`. Run `uv sync` again.
 
 If you don't use Python, you can install the Rust [`rerun` crate](https://crates.io/crates/rerun) to get a CLI to the Rerun viewer.
 
@@ -88,26 +95,32 @@ A [`justfile`](./justfile) is provided for common tasks. Run `just` to list all 
 ```sh
 just
 Available recipes:
-    default    # List available commands
+    default      # List available commands
 
     [build]
-    build      # Build Rust and Python packages
-    build-py   # Build Python package
-    build-rs   # Build Rust binary
+    build        # Build Rust and Python packages
+    build-py     # Build Python package
+    build-rs     # Build Rust binary
 
     [format]
-    fmt        # Format Rust and Python sources
-    fmt-py     # Format Python sources
-    fmt-rs     # Format Rust sources
+    fmt          # Format Rust and Python sources
+    fmt-check    # Check Rust and Python formatting
+    fmt-check-md # Check Markdown formatting
+    fmt-check-py # Check Python formatting
+    fmt-check-rs # Check Rust formatting
+    fmt-md       # Format Markdown sources
+    fmt-py       # Format Python sources
+    fmt-rs       # Format Rust sources
 
     [lint]
-    lint       # Lint Rust and Python sources
-    lint-py    # Lint Python sources
-    lint-rs    # Lint Rust sources
+    lint         # Lint Rust and Python sources
+    lint-py      # Lint Python sources
+    lint-rs      # Lint Rust sources
+    typecheck-py # Typecheck Python sources
 
     [run]
-    run-py fit # Run the Python app.  Example: just run-py path/to/activity.fit
-    run-rs fit # Run the Rust app.  Example: just run-rs path/to/activity.fit
+    run-py fit   # Run the Python app.  Example: just run-py path/to/activity.fit
+    run-rs fit   # Run the Rust app.  Example: just run-rs path/to/activity.fit
 ```
 
 ### Python (manual)
@@ -242,7 +255,6 @@ Options:
 
 </details>
 
-
 ## How to
 
 ### Customize `MapView`
@@ -266,7 +278,7 @@ To use a map tile style other than the default `osm` (OpenStreetMap), set a [Map
 
 ### Graphics: `khronos-egl` panics on Linux
 
-#### Error 
+#### Error
 
 ```sh
 thread 'main' panicked at 'called `Option::unwrap()` on a `None` value'
