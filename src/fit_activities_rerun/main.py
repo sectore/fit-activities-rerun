@@ -133,6 +133,15 @@ def get_available_data_ids(act: Activity) -> list[str]:
     ]
 
 
+# Force `TimeSeriesView`'s x-axis to show everything (it defaults to a relative range).
+_FULL_TIME_AXIS = rrb.TimeAxis(
+    view_range=rr.TimeRange(
+        start=rrb.TimeRangeBoundary.infinite(),
+        end=rrb.TimeRangeBoundary.infinite(),
+    )
+)
+
+
 def create_map_view(id: str, map_provider: MapProviderLike) -> rrb.MapView:
     return rrb.MapView(name="map", origin=f"{id}/route", background=map_provider)
 
@@ -142,7 +151,9 @@ def create_text_view(id: str) -> rrb.TextDocumentView:
 
 
 def create_time_series_view(id: str, data_id: str) -> rrb.TimeSeriesView:
-    return rrb.TimeSeriesView(name=f"{data_id}", origin=f"{id}/{data_id}")
+    return rrb.TimeSeriesView(
+        name=f"{data_id}", origin=f"{id}/{data_id}", axis_x=_FULL_TIME_AXIS
+    )
 
 
 def blueprint_default(
@@ -158,7 +169,9 @@ def blueprint_default(
     container = rrb.Horizontal(
         create_map_view(id, map_provider),
         rrb.Vertical(
-            rrb.TimeSeriesView(name="metrics", contents=time_series_contents),
+            rrb.TimeSeriesView(
+                name="metrics", contents=time_series_contents, axis_x=_FULL_TIME_AXIS
+            ),
             create_text_view(id),
         ),
     )
