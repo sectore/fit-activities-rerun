@@ -3,7 +3,6 @@ import datetime
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, TypeAlias
 
 import fitdecode
 import rerun as rr
@@ -11,7 +10,7 @@ import rerun.blueprint as rrb
 from dotenv import load_dotenv
 from rerun.blueprint.components import MapProviderLike
 
-Position: TypeAlias = tuple[float, float]
+type Position = tuple[float, float]
 
 
 def format_distance(kilometers: float) -> str:
@@ -31,7 +30,7 @@ def format_time(seconds: float) -> str:
     if secs < 60:
         return f"{secs}s"
 
-    parts = []
+    parts: list[str] = []
 
     if secs >= 86400:
         days, secs = divmod(secs, 86400)
@@ -60,60 +59,60 @@ def format_speed(speed: float) -> str:
 @dataclass
 class Record:
     timestamp: datetime.datetime
-    position_lat: Optional[float] = None
-    position_long: Optional[float] = None
-    distance: Optional[float] = None
-    speed: Optional[float] = None
-    heartrate: Optional[int] = None
-    temperature: Optional[int] = None
-    altitude: Optional[float] = None
+    position_lat: float | None = None
+    position_long: float | None = None
+    distance: float | None = None
+    speed: float | None = None
+    heartrate: int | None = None
+    temperature: int | None = None
+    altitude: float | None = None
 
 
 @dataclass
 class Activity:
     id: str
     records: list[Record]
-    type: Optional[str] = None
+    type: str | None = None
 
     # time data
-    start_time: Optional[datetime.datetime] = None
-    total_time: Optional[float] = None
-    pause_time: Optional[float] = None
+    start_time: datetime.datetime | None = None
+    total_time: float | None = None
+    pause_time: float | None = None
 
     # distance data
-    total_distance: Optional[float] = None
+    total_distance: float | None = None
 
     # temperature data
     no_temperature_records: int = False
-    max_temperature: Optional[int] = None
-    min_temperature: Optional[int] = None
-    avg_temperature: Optional[int] = None
+    max_temperature: int | None = None
+    min_temperature: int | None = None
+    avg_temperature: int | None = None
 
     def has_temperature_data(self) -> bool:
         return self.no_temperature_records > 0
 
     # altitude data
     no_altitude_records: int = 0
-    max_altitude: Optional[float] = None
-    min_altitude: Optional[float] = None
-    avg_altitude: Optional[float] = None
+    max_altitude: float | None = None
+    min_altitude: float | None = None
+    avg_altitude: float | None = None
 
     def has_altitude_data(self) -> bool:
         return self.no_altitude_records > 0
 
     # speed data
     no_speed_records: int = 0
-    max_speed: Optional[float] = None
-    min_speed: Optional[float] = None
-    avg_speed: Optional[float] = None
+    max_speed: float | None = None
+    min_speed: float | None = None
+    avg_speed: float | None = None
 
     def has_speed_data(self) -> bool:
         return self.no_speed_records > 0
 
     # heartrate data
-    max_heartrate: Optional[int] = None
-    min_heartrate: Optional[int] = None
-    avg_heartrate: Optional[int] = None
+    max_heartrate: int | None = None
+    min_heartrate: int | None = None
+    avg_heartrate: int | None = None
     no_heartrate_records: int = 0
 
     def has_heartrate_data(self) -> bool:
@@ -198,7 +197,7 @@ def parse_fit_file(file_path: Path) -> Activity:
     """Parse FIT file and extract `RecordData`."""
     """Note: On some devices some data are not available in `session` fields."""
     """In this case it will be parsed and calculated from `records` fields."""
-    records = []
+    records: list[Record] = []
 
     id = file_path.stem.replace(" ", "_")
     activity = Activity(id=id, records=[])
@@ -533,7 +532,7 @@ def log_data(act: Activity):
         start_time = act.start_time.strftime("%d.%m.%Y %H:%M:%S")
         info_lines.append(f"- START **{start_time}**")
     if act.total_time is not None or act.pause_time is not None:
-        parts = []
+        parts: list[str] = []
         if act.total_time is not None:
             parts.append(f"**{format_time(act.total_time)}** (total)")
         if act.pause_time is not None and act.pause_time > 0:
