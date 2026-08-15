@@ -14,7 +14,7 @@ dependencies = [
 fit-activities-rerun = "fit_activities_rerun.main:main"
 
 [dependency-groups]
-dev = ["ruff", "basedpyright"]
+dev = ["ruff", "basedpyright", "pre-commit"]
 
 [tool.basedpyright]
 typeCheckingMode = "basic"
