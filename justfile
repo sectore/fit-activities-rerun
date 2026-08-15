@@ -16,7 +16,31 @@ fmt-rs:
 # Format Python sources
 [group('format')]
 fmt-py:
-    uvx ruff format src/
+    uv run --only-group dev ruff format src/
+
+# Format Markdown sources
+[group('format')]
+fmt-md:
+    dprint fmt
+
+# Check Rust and Python formatting
+[group('format')]
+fmt-check: fmt-check-rs fmt-check-py
+
+# Check Rust formatting
+[group('format')]
+fmt-check-rs:
+    cargo fmt --check
+
+# Check Python formatting
+[group('format')]
+fmt-check-py:
+    uv run --only-group dev ruff format --check src/
+
+# Check Markdown formatting
+[group('format')]
+fmt-check-md:
+    dprint check
 
 # ── Lint ──────────────────────────────────────────────────────────────────────
 
@@ -32,7 +56,12 @@ lint-rs:
 # Lint Python sources
 [group('lint')]
 lint-py:
-    uvx ruff check src/
+    uv run --only-group dev ruff check src/
+
+# Typecheck Python sources
+[group('lint')]
+typecheck-py:
+    uv run --only-group dev basedpyright src/
 
 # ── Build ─────────────────────────────────────────────────────────────────────
 
